@@ -1,0 +1,15 @@
+{
+        "name": "@afterdarktk/cli",
+        "version": "0.1.0",
+        "bin": {
+                "adtk": "dist/index.js"
+        },
+        "scripts": {
+                "build": "tsup src/index.ts --format esm --dts --sourcemap"
+        },
+        "dependencies": {
+                "commander": "^14.0.2",
+                "@afterdarktk/core": "workspace:*"
+        },
+        "type": "module"
+}
