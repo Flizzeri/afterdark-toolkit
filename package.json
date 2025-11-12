@@ -10,6 +10,7 @@
         "scripts": {
                 "build": "pnpm -r run build",
                 "test": "pnpm -r run test",
+                "check": "pnpm -r run check",
                 "lint": "eslint . --ext .ts",
                 "format": "prettier --write .",
                 "clean": "rimraf **/dist",
@@ -19,7 +20,7 @@
                 "*.{ts,tsx}": [
                         "eslint --fix",
                         "prettier --write",
-                        "tsc --noEmit -p tsconfig.base.json"
+                        "pnpm run check"
                 ]
         },
         "devDependencies": {
@@ -36,7 +37,7 @@
                 "prettier": "^3.2.0",
                 "rimraf": "^6.0.0",
                 "tsup": "^8.0.0",
-                "typescript": "^5.6.0",
+                "typescript": "^5.9.3",
                 "typescript-eslint": "^8.46.4"
         },
         "engines": {
