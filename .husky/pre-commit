@@ -1,1 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Always start from the repository root
+cd "$(git rev-parse --show-toplevel)" || exit 1
+
+echo "Running pre-commit checks..."
+
+# 1. Run format + lint on staged files
 pnpm lint-staged
+
+# 2. Optionally run full type-check across workspaces
+pnpm -r run check
+
+echo "✓ Pre-commit checks passed"
