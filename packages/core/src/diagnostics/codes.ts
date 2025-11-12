@@ -1,6 +1,6 @@
-import type { DiagnosticCategory } from './categories';
-import { DOCS_BASE_URL, ERROR_NAMESPACE_IR } from './constants';
-import type { ErrorCode } from './types';
+import type { DiagnosticCategory } from './categories.js';
+import { DOCS_BASE_URL, ERROR_NAMESPACE_IR } from './constants.js';
+import type { ErrorCode } from './types.js';
 
 // Define the *canonical* set of codes for the core/IR layer.
 // Keep codes stable; add, don’t reuse.

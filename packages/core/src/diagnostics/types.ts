@@ -1,4 +1,4 @@
-import type { DiagnosticCategory } from './categories';
+import type { DiagnosticCategory } from './categories.js';
 
 export interface DiagnosticLocation {
         readonly filePath?: string; // normalized posix path
