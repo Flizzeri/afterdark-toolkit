@@ -1,49 +1,93 @@
-export default {
-        root: true,
-        parser: '@typescript-eslint/parser',
-        plugins: ['@typescript-eslint', 'import'],
-        extends: [
-                'eslint:recommended',
-                'plugin:@typescript-eslint/recommended',
-                'plugin:@typescript-eslint/stylistic',
-                'plugin:import/errors',
-                'plugin:import/warnings',
-                'plugin:import/typescript',
-                'prettier',
-        ],
-        parserOptions: {
-                ecmaVersion: 'latest',
-                sourceType: 'module',
-                project: './tsconfig.base.json',
-        },
-        rules: {
-                // Safety & clarity
-                '@typescript-eslint/explicit-function-return-type': ['error'],
-                '@typescript-eslint/no-explicit-any': ['error'],
-                '@typescript-eslint/consistent-type-imports': ['error'],
-                '@typescript-eslint/no-inferrable-types': ['error'],
-                '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-                '@typescript-eslint/array-type': ['error', { default: 'array-simple' }],
-                '@typescript-eslint/explicit-member-accessibility': [
-                        'error',
-                        { accessibility: 'explicit' },
-                ],
-                '@typescript-eslint/member-ordering': 'error',
-                'no-console': ['warn', { allow: ['error', 'warn'] }],
-                'import/no-default-export': 'error',
-                'import/order': [
-                        'error',
-                        {
-                                groups: [
-                                        'builtin',
-                                        'external',
-                                        'internal',
-                                        ['parent', 'sibling', 'index'],
-                                ],
-                                'newlines-between': 'always',
-                                alphabetize: { order: 'asc', caseInsensitive: true },
+// eslint.config.js
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import importX from 'eslint-plugin-import-x';
+import jsdoc from 'eslint-plugin-jsdoc';
+import prettier from 'eslint-config-prettier';
+
+export default [
+        js.configs.recommended,
+
+        // --- TypeScript rules ---
+        {
+                files: ['**/*.ts', '**/*.tsx'],
+                languageOptions: {
+                        parser: tseslint.parser,
+                        parserOptions: {
+                                project: ['./tsconfig.base.json'],
+                                tsconfigRootDir: import.meta.dirname,
+                                ecmaVersion: 'latest',
+                                sourceType: 'module',
                         },
-                ],
+                        globals: {
+                                console: 'readonly',
+                                process: 'readonly',
+                                module: 'readonly',
+                                require: 'readonly',
+                                __dirname: 'readonly',
+                                __filename: 'readonly',
+                        },
+                },
+                plugins: {
+                        '@typescript-eslint': tseslint.plugin,
+                        'import-x': importX,
+                        jsdoc,
+                },
+                rules: {
+                        // --- TypeScript strictness ---
+                        '@typescript-eslint/explicit-function-return-type': 'error',
+                        '@typescript-eslint/no-explicit-any': 'error',
+                        '@typescript-eslint/consistent-type-imports': 'error',
+                        '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+                        '@typescript-eslint/array-type': ['error', { default: 'array-simple' }],
+                        '@typescript-eslint/explicit-member-accessibility': [
+                                'error',
+                                { accessibility: 'explicit' },
+                        ],
+
+                        // --- Import hygiene ---
+                        'import-x/no-default-export': 'error',
+                        'import-x/order': [
+                                'error',
+                                {
+                                        groups: [
+                                                'builtin',
+                                                'external',
+                                                'internal',
+                                                ['parent', 'sibling', 'index'],
+                                        ],
+                                        'newlines-between': 'always',
+                                        alphabetize: { order: 'asc', caseInsensitive: true },
+                                },
+                        ],
+
+                        // --- JSDoc / TSDoc ---
+                        'jsdoc/check-alignment': 'error',
+                        'jsdoc/check-indentation': 'warn',
+                        'jsdoc/require-description': 'error',
+                        'jsdoc/require-param': 'error',
+                        'jsdoc/require-returns': 'error',
+
+                        // --- General hygiene ---
+                        'no-console': ['warn', { allow: ['warn', 'error'] }],
+                        'no-duplicate-imports': 'error',
+                },
         },
-        ignorePatterns: ['dist', 'node_modules'],
-};
+
+        // --- JS files ---
+        {
+                files: ['**/*.js', '**/*.mjs'],
+                ...js.configs.recommended,
+                rules: {
+                        'no-var': 'error',
+                        'prefer-const': 'error',
+                },
+        },
+
+        // --- Prettier last to neutralize style conflicts ---
+        prettier,
+
+        {
+                ignores: ['dist', 'node_modules', '.afterdark/cache'],
+        },
+];
