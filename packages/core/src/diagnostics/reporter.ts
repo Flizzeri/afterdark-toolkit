@@ -1,5 +1,4 @@
-import { CATEGORY_ORDER } from './categories.js';
-import type { Diagnostic } from './types.js';
+import type { Diagnostic, DiagnosticCategory } from '../shared/diagnostics.js';
 
 export type ReportMode = 'pretty' | 'json';
 
@@ -7,6 +6,12 @@ export interface ReportOptions {
         readonly mode: ReportMode;
         readonly includeStack?: boolean; // reserved for future, default false
 }
+
+export const CATEGORY_ORDER: Readonly<Record<DiagnosticCategory, number>> = {
+        error: 0,
+        warning: 1,
+        info: 2,
+} as const;
 
 // Stable sort: category order, then code, then message text.
 function sortDiagnostics(diags: readonly Diagnostic[]): readonly Diagnostic[] {

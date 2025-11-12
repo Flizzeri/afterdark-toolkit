@@ -1,5 +1,14 @@
-import { type IrErrorKey, codeUrl, getCodeMeta } from './codes.js';
-import type { Diagnostic, DiagnosticContext, DiagnosticLocation } from './types.js';
+import { DOCS_BASE_URL } from '../shared/constants.js';
+import type {
+        CodeMeta,
+        Diagnostic,
+        DiagnosticContext,
+        DiagnosticLocation,
+} from '../shared/diagnostics.js';
+
+function codeUrl(meta: CodeMeta): string {
+        return `${DOCS_BASE_URL}/${meta.docsSlug}`;
+}
 
 // String formatting w/ explicit typing.
 function format(template: string, args: readonly string[]): string {
@@ -11,37 +20,20 @@ function format(template: string, args: readonly string[]): string {
 }
 
 export interface DiagnosticInput {
-        readonly key: IrErrorKey;
+        readonly meta: CodeMeta;
         readonly args?: readonly string[];
         readonly location?: DiagnosticLocation;
         readonly context?: DiagnosticContext;
 }
 
 export function makeDiagnostic(input: DiagnosticInput): Diagnostic {
-        const meta = getCodeMeta(input.key);
-        const message = format(meta.template, input.args ?? []);
+        const message = format(input.meta.template, input.args ?? []);
         return {
-                code: meta.code,
-                category: meta.category,
+                code: input.meta.code,
+                category: input.meta.category,
                 message,
-                helpUrl: codeUrl(meta),
+                helpUrl: codeUrl(input.meta),
                 ...(input.location && { location: input.location }),
                 ...(input.context && { context: input.context }),
         };
-}
-
-// Small helpers for ergonomics.
-export function diagError(
-        key: IrErrorKey,
-        args: readonly string[],
-        location?: DiagnosticLocation,
-        context?: DiagnosticContext,
-): Diagnostic {
-        const d = makeDiagnostic({
-                key,
-                args,
-                ...(location && { location }),
-                ...(context && { context }),
-        });
-        return d;
 }
