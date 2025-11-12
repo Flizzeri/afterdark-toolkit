@@ -5,7 +5,8 @@
                 "adtk": "dist/index.js"
         },
         "scripts": {
-                "build": "tsup src/index.ts --format esm --dts --sourcemap"
+                "build": "tsup src/index.ts --format esm --dts --sourcemap",
+                "check": "tsc --noEmit -p tsconfig.json"
         },
         "dependencies": {
                 "commander": "^14.0.2",
