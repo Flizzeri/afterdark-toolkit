@@ -74,6 +74,36 @@ export default [
                 },
         },
 
+        // --- ✅ Vitest / test files ---
+        {
+                files: ['**/tests/**/*.ts', '**/__tests__/**/*.ts', '**/*.spec.ts'],
+                languageOptions: {
+                        parser: tseslint.parser,
+                        parserOptions: {
+                                project: ['./tsconfig.test.json'],
+                                tsconfigRootDir: import.meta.dirname,
+                                ecmaVersion: 'latest',
+                                sourceType: 'module',
+                        },
+                        globals: {
+                                vi: 'readonly',
+                                describe: 'readonly',
+                                it: 'readonly',
+                                test: 'readonly',
+                                expect: 'readonly',
+                                beforeAll: 'readonly',
+                                afterAll: 'readonly',
+                                beforeEach: 'readonly',
+                                afterEach: 'readonly',
+                        },
+                },
+                rules: {
+                        // Relax rules that are too strict for test files
+                        '@typescript-eslint/explicit-function-return-type': 'off',
+                        'no-console': 'off',
+                },
+        },
+
         // --- JS files ---
         {
                 files: ['**/*.js', '**/*.mjs'],
@@ -84,7 +114,7 @@ export default [
                 },
         },
 
-        // --- Prettier last to neutralize style conflicts ---
+        // --- Prettier last ---
         prettier,
 
         {
