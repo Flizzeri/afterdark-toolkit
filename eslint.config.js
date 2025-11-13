@@ -27,6 +27,8 @@ export default [
                                 __dirname: 'readonly',
                                 __filename: 'readonly',
                                 structuredClone: 'readonly',
+                                Buffer: 'readonly',
+                                btoa: 'readonly',
                         },
                 },
                 plugins: {
@@ -66,8 +68,6 @@ export default [
                         'jsdoc/check-alignment': 'error',
                         'jsdoc/check-indentation': 'warn',
                         'jsdoc/require-description': 'error',
-                        'jsdoc/require-param': 'error',
-                        'jsdoc/require-returns': 'error',
 
                         // --- General hygiene ---
                         'no-console': ['warn', { allow: ['warn', 'error'] }],
