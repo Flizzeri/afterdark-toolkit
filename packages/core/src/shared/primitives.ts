@@ -10,6 +10,10 @@ export type DiagnosticCode = Branded<string, 'DiagnosticCode'>;
 export type VersionString = Branded<string, 'VersionString'>;
 export type CanonicalJson = Branded<string, 'BrandedJson'>;
 export type Fingerprint = Branded<string, 'Fingerprint'>;
+export type SymbolId = Branded<string, 'SymbolId'>;
+export type TypeId = Branded<string, 'TypeId'>;
+export type NodeId = Branded<string, 'NodeId'>;
+export type JsDocTagName = Branded<string, 'JsDocTagName'>;
 
 // Exhaustiveness guard
 export const assertNever = (x: never): never => {
