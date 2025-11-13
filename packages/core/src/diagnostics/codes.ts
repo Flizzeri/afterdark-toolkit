@@ -1,3 +1,5 @@
+// src/diagnostics/codes.ts
+
 import { DIAGNOSTIC_PREFIX } from '../shared/constants.js';
 import type { CodeMeta } from '../shared/diagnostics.js';
 

@@ -1,3 +1,5 @@
+// src/diagnostics/factory.ts
+
 import { DOCS_BASE_URL } from '../shared/constants.js';
 import type {
         CodeMeta,

@@ -1,3 +1,5 @@
+// src/diagnostics/reporter.ts
+
 import type { Diagnostic, DiagnosticCategory } from '../shared/diagnostics.js';
 
 export type ReportMode = 'pretty' | 'json';

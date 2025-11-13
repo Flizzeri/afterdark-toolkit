@@ -1,10 +1,5 @@
 // packages/core/src/shared/constants.ts
 
-/**
- * Core constants for @afterdarktk/core.
- * These are immutable and form part of the stable contract layer.
- */
-
 export const PROJECT_NAME = 'afterdarktk';
 export const DOCS_BASE_URL = 'https://afterdark.dev/errors';
 export const CACHE_ROOT = `.afterdarktk/cache`;

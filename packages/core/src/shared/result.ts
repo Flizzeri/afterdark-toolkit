@@ -1,3 +1,5 @@
+// src/shared/result.ts
+
 import type { Diagnostic } from './diagnostics';
 
 export type Ok<T> = { ok: true; value: T };

@@ -1,10 +1,5 @@
 // packages/core/src/shared/primitives.ts
 
-/**
- * Branded primitive types and core discriminated unions.
- * These form the foundation of strict typing across @afterdarktk/core.
- */
-
 export type Branded<T, B extends string> = T & { readonly __brand: B };
 
 // Fundamental branded primitives

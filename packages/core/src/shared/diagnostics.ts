@@ -1,3 +1,5 @@
+// src/shared/diagnostics.ts
+
 import type { DIAGNOSTIC_PREFIX } from './constants.js';
 import type { FilePath } from './primitives.js';
 
