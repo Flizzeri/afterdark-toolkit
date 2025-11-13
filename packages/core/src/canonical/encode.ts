@@ -7,6 +7,7 @@ import {
 } from '../diagnostics/codes.js';
 import { makeDiagnostic } from '../diagnostics/factory.js';
 import type { Diagnostic } from '../shared/diagnostics.js';
+import type { CanonicalJson } from '../shared/primitives.js';
 import { ok, err, type Result } from '../shared/result.js';
 
 type JsonPrimitive = string | number | boolean | null;
@@ -84,7 +85,7 @@ export const DEFAULT_CANONICAL_CONFIG: CanonicalEncodeConfig = Object.freeze({
 export function encodeCanonical(
         value: unknown,
         config: Partial<CanonicalEncodeConfig> = {},
-): Result<string> {
+): Result<CanonicalJson> {
         const cfg: CanonicalEncodeConfig = { ...DEFAULT_CANONICAL_CONFIG, ...config };
 
         const seen = new Set<unknown>(); // cycle detection
@@ -442,7 +443,7 @@ export function encodeCanonical(
         }
         // Final serialization with canonical key order and compact whitespace.
         const json = serializeCanonical(normalized);
-        return ok(json);
+        return ok(json as CanonicalJson);
 }
 
 // --- Helpers ----------------------------------------------------------------
