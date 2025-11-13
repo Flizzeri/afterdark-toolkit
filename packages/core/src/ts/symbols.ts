@@ -175,7 +175,8 @@ function normalizeJsDocText(
         return raw
                 .replace(/\r\n/g, '\n') // normalize newlines
                 .replace(/\s+/g, ' ') // collapse whitespace
-                .replace(/\*+/g, '') // remove stray asterisks from JSDoc body
+                .replace(/^\*+/g, '')
+                .replace(/\s*\*+\s*$/g, '') // remove stray asterisks from JSDoc body
                 .trim();
 }
 
