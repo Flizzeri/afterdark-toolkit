@@ -6,3 +6,4 @@
 .idea
 coverage
 **/tsconfig.tsbuildinfo
+**/.DS_Store
