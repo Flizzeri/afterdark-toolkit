@@ -6,7 +6,6 @@ import { normalizePath } from '../../../src/ts/fs.js';
 import { createProgram, type ProgramWrapper } from '../../../src/ts/program.js';
 import {
         getSymbolId,
-        getTypeId,
         resolveSymbolType,
         getSymbolDeclarations,
         extractJsDocTags,
@@ -43,26 +42,6 @@ describe('symbols', () => {
                                 expect(id1).toBe(id2);
                                 expect(typeof id1).toBe('string');
                                 expect(id1.length).toBeGreaterThan(0);
-                        }
-                });
-        });
-
-        describe('getTypeId', () => {
-                it('should return stable type ID', async () => {
-                        const result = findExportedSymbol(wrapper, 'User');
-                        expect(result.ok).toBe(true);
-
-                        if (result.ok) {
-                                const typeResult = resolveSymbolType(result.value);
-                                expect(typeResult.ok).toBe(true);
-
-                                if (typeResult.ok) {
-                                        const id1 = getTypeId(typeResult.value);
-                                        const id2 = getTypeId(typeResult.value);
-
-                                        expect(id1).toBe(id2);
-                                        expect(typeof id1).toBe('string');
-                                }
                         }
                 });
         });

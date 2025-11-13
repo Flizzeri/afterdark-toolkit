@@ -18,7 +18,7 @@ import type { ProgramWrapper } from './program.js';
 import type { ParsedJsDocTag, SourceSpan } from './types.js';
 import { TYPE_UNRESOLVED } from '../diagnostics/codes.js';
 import { makeDiagnostic } from '../diagnostics/factory.js';
-import type { SymbolId, TypeId, JsDocTagName } from '../shared/primitives.js';
+import type { SymbolId, JsDocTagName } from '../shared/primitives.js';
 import { ok, err, type Result } from '../shared/result.js';
 
 /**
@@ -33,20 +33,6 @@ export function getSymbolId(symbol: TsSymbol): SymbolId {
         // Remove quotes from module identifiers for stability
         const normalized = fqn.replace(/["']/g, '');
         return normalized as SymbolId;
-}
-
-/**
- * Gets a stable type ID from a TypeScript type.
- * Uses the type's intrinsic properties to generate a deterministic identifier.
- *
- * @param type - The TypeScript type.
- * @returns Branded TypeId.
- */
-export function getTypeId(type: TsType): TypeId {
-        // Use type's text representation as a stable ID
-        // This is deterministic for structural types
-        const text = type.getText();
-        return text as TypeId;
 }
 
 /**
@@ -324,7 +310,6 @@ export function getInterfacesWithTag(
 }
 
 Object.freeze(getSymbolId);
-Object.freeze(getTypeId);
 Object.freeze(resolveSymbolType);
 Object.freeze(getSymbolDeclarations);
 Object.freeze(extractJsDocTags);
