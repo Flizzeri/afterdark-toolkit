@@ -14,6 +14,7 @@ export type Hash = Branded<string, 'Hash'>;
 export type DiagnosticCode = Branded<string, 'DiagnosticCode'>;
 export type VersionString = Branded<string, 'VersionString'>;
 export type CanonicalJson = Branded<string, 'BrandedJson'>;
+export type Fingerprint = Branded<string, 'Fingerprint'>;
 
 // Exhaustiveness guard
 export const assertNever = (x: never): never => {

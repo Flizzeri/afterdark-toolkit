@@ -55,14 +55,6 @@ export const TAG_MALFORMED: CodeMeta = {
         docsSlug: 'ADTK-IR-3002',
 } as const;
 
-// 4xxx: Determinism / hashing
-export const HASH_UNSTABLE_INPUT: CodeMeta = {
-        code: `${DIAGNOSTIC_PREFIX_IR}-4001`,
-        category: 'error',
-        template: 'Non-deterministic input detected during hashing: %s',
-        docsSlug: 'ADTK-IR-4001',
-} as const;
-
 // 91xx: Internal / encoding
 export const CANONICAL_UNSUPPORTED_TYPE: CodeMeta = {
         code: `${DIAGNOSTIC_PREFIX_IR}-9101`,
@@ -83,4 +75,19 @@ export const CANONICAL_BIGINT_POLICY: CodeMeta = {
         category: 'error',
         template: 'BigInt encountered but disallowed by policy',
         docsSlug: 'ADTK-CANONICAL-1003',
+} as const;
+
+// 92xx: Internal / encoding
+export const CACHE_CORRUPTED: CodeMeta = {
+        code: `${DIAGNOSTIC_PREFIX_IR}-9201`,
+        category: 'error',
+        template: 'Cache entry is corrupted or checksum mismatch: %s',
+        docsSlug: 'ADTK-CACHE-9001',
+} as const;
+
+export const CACHE_IO_ERROR: CodeMeta = {
+        code: `${DIAGNOSTIC_PREFIX_IR}-9202`,
+        category: 'error',
+        template: 'Cache I/O error at %s: %s',
+        docsSlug: 'ADTK-CACHE-9002',
 } as const;
