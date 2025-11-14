@@ -1,0 +1,23 @@
+{
+        "compilerOptions": {
+                "target": "ES2020",
+                "module": "ESNext",
+                "lib": ["ES2020"],
+                "strict": true,
+                "strictNullChecks": true,
+                "strictFunctionTypes": true,
+                "strictBindCallApply": true,
+                "strictPropertyInitialization": true,
+                "noImplicitAny": true,
+                "noImplicitThis": true,
+                "alwaysStrict": true,
+                "exactOptionalPropertyTypes": true,
+                "noUncheckedIndexedAccess": true,
+                "noImplicitReturns": true,
+                "noFallthroughCasesInSwitch": true,
+                "skipLibCheck": true,
+                "esModuleInterop": true,
+                "declaration": true
+        },
+        "include": ["*.ts"]
+}
