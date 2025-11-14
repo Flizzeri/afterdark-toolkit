@@ -15,11 +15,26 @@ import {
 
 import { normalizePath } from './fs.js';
 import type { ProgramWrapper } from './program.js';
-import type { ParsedJsDocTag, SourceSpan } from './types.js';
 import { TYPE_UNRESOLVED } from '../diagnostics/codes.js';
 import { makeDiagnostic } from '../diagnostics/factory.js';
 import type { SymbolId, JsDocTagName } from '../shared/primitives.js';
 import { ok, err, type Result } from '../shared/result.js';
+
+// Represents a parsed JSDoc tag with stable structure.
+interface ParsedJsDocTag {
+        readonly name: JsDocTagName;
+        readonly text: string; // trimmed, normalized whitespace
+        readonly comment?: string; // optional tag comment/description
+}
+
+// Represents a source location span (1-based line/column).
+interface SourceSpan {
+        readonly filePath: string; // normalized posix path
+        readonly startLine: number; // 1-based
+        readonly startColumn: number; // 1-based
+        readonly endLine: number; // 1-based
+        readonly endColumn: number; // 1-based
+}
 
 /**
  * Gets a stable, deterministic symbol ID from a TypeScript symbol.
