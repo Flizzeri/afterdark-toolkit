@@ -56,7 +56,6 @@ If the compiler cannot reduce a type to a concrete structural form, extraction f
 | `@fk target.field [onDelete:onUpdate]` | Foreign key                          |
 | `@default value`                       | Default expression                   |
 | `@renameFrom oldName[@version]`        | Rename hint for migrations           |
-| `@domain name as type [check(...)]`    | Defines PostgreSQL domain            |
 | `@sqlType type`                        | Overrides inferred SQL type          |
 | `@decimal precision,scale`             | Declares numeric precision           |
 | `@check expression`                    | Adds SQL check constraint            |
@@ -64,18 +63,16 @@ If the compiler cannot reduce a type to a concrete structural form, extraction f
 
 #### Validation Constraints
 
-| Tag                        | Applies To     | Description                                |
-| -------------------------- | -------------- | ------------------------------------------ |
-| `@min`, `@max`             | numbers        | Numeric bounds                             |
-| `@int`                     | numbers        | Integer only                               |
-| `@minLength`, `@maxLength` | string, array  | Length bounds                              |
-| `@pattern`, `@regex`       | string         | Regex constraint                           |
-| `@format`                  | string         | e.g. `email`, `uuid`, `url`, `date-time`   |
-| `@email`, `@uuid`, `@url`  | string         | Shortcuts for `@format`                    |
-| `@nullable`, `@optional`   | any            | Overrides inferred nullability/optionality |
-| `@enum`                    | string, number | Declares fixed set of allowed values       |
-| `@description text`        | any            | For documentation only                     |
-| `@validator name`          | any            | Uses named validator from registry         |
+| Tag                        | Applies To    | Description                              |
+| -------------------------- | ------------- | ---------------------------------------- |
+| `@min`, `@max`             | numbers       | Numeric bounds                           |
+| `@int`                     | numbers       | Integer only                             |
+| `@minLength`, `@maxLength` | string, array | Length bounds                            |
+| `@pattern`, `@regex`       | string        | Regex constraint                         |
+| `@format`                  | string        | e.g. `email`, `uuid`, `url`, `date-time` |
+| `@email`, `@uuid`, `@url`  | string        | Shortcuts for `@format`                  |
+| `@description text`        | any           | For documentation only                   |
+| `@validator name`          | any           | Uses named validator from registry       |
 
 Annotations are optional; types remain valid TypeScript even without them.
 
