@@ -2,7 +2,6 @@
 import {
         type Node,
         type Symbol as TsSymbol,
-        type Type as TsType,
         type InterfaceDeclaration,
         type TypeAliasDeclaration,
         type JSDocText,
@@ -48,50 +47,6 @@ export function getSymbolId(symbol: TsSymbol): SymbolId {
         // Remove quotes from module identifiers for stability
         const normalized = fqn.replace(/["']/g, '');
         return normalized as SymbolId;
-}
-
-/**
- * Resolves a symbol's type, following aliases to their target.
- * Returns the final resolved type after unwrapping all aliases.
- * Never throws; returns Result with diagnostics on failure.
- *
- * @param symbol - The symbol to resolve.
- * @returns Result containing the resolved type or diagnostics.
- */
-export function resolveSymbolType(symbol: TsSymbol): Result<TsType> {
-        try {
-                const declaredType = symbol.getDeclaredType();
-                if (!declaredType) {
-                        return err([
-                                makeDiagnostic({
-                                        meta: TYPE_UNRESOLVED,
-                                        args: [
-                                                `Symbol ${getSymbolId(symbol)} has no declared type`,
-                                        ],
-                                }),
-                        ]);
-                }
-
-                // Follow alias chain to target
-                let type = declaredType;
-                while (type.isTypeParameter() || type.getAliasSymbol()) {
-                        const target = type.getTargetType();
-                        if (target && target !== type) {
-                                type = target;
-                        } else {
-                                break;
-                        }
-                }
-
-                return ok(type);
-        } catch (e) {
-                return err([
-                        makeDiagnostic({
-                                meta: TYPE_UNRESOLVED,
-                                args: [`Failed to resolve type for symbol: ${String(e)}`],
-                        }),
-                ]);
-        }
 }
 
 /**
@@ -326,7 +281,6 @@ export function getInterfacesWithTag(
 }
 
 Object.freeze(getSymbolId);
-Object.freeze(resolveSymbolType);
 Object.freeze(getSymbolDeclarations);
 Object.freeze(extractJsDocTags);
 Object.freeze(getNodeSpan);

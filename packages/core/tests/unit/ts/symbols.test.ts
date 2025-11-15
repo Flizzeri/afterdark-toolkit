@@ -6,7 +6,6 @@ import { normalizePath } from '../../../src/ts/fs.js';
 import { createProgram, type ProgramWrapper } from '../../../src/ts/program.js';
 import {
         getSymbolId,
-        resolveSymbolType,
         getSymbolDeclarations,
         extractJsDocTags,
         getNodeSpan,
@@ -42,52 +41,6 @@ describe('symbols', () => {
                                 expect(id1).toBe(id2);
                                 expect(typeof id1).toBe('string');
                                 expect(id1.length).toBeGreaterThan(0);
-                        }
-                });
-        });
-
-        describe('resolveSymbolType', () => {
-                it('should resolve interface type', async () => {
-                        const result = findExportedSymbol(wrapper, 'User');
-                        expect(result.ok).toBe(true);
-
-                        if (result.ok) {
-                                const typeResult = resolveSymbolType(result.value);
-                                expect(typeResult.ok).toBe(true);
-
-                                if (typeResult.ok) {
-                                        expect(typeResult.value).toBeDefined();
-                                        expect(typeResult.value.getText()).toContain('User');
-                                }
-                        }
-                });
-
-                it('should resolve type alias to its target', async () => {
-                        const result = findExportedSymbol(wrapper, 'UserId');
-                        expect(result.ok).toBe(true);
-
-                        if (result.ok) {
-                                const typeResult = resolveSymbolType(result.value);
-                                expect(typeResult.ok).toBe(true);
-
-                                if (typeResult.ok) {
-                                        const typeText = typeResult.value.getText();
-                                        expect(typeText).toBe('string');
-                                }
-                        }
-                });
-
-                it('should resolve union type', async () => {
-                        const result = findExportedSymbol(wrapper, 'UserStatus');
-                        expect(result.ok).toBe(true);
-
-                        if (result.ok) {
-                                const typeResult = resolveSymbolType(result.value);
-                                expect(typeResult.ok).toBe(true);
-
-                                if (typeResult.ok) {
-                                        expect(typeResult.value.isUnion()).toBe(true);
-                                }
                         }
                 });
         });
