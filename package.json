@@ -12,6 +12,7 @@
                 "test": "pnpm -r run test",
                 "coverage": "pnpm -r run coverage",
                 "check": "pnpm -r run check",
+                "full-check": "pnpm run lint && pnpm -r run check && pnpm run test",
                 "lint": "eslint . --ext .ts",
                 "format": "prettier --write .",
                 "clean": "rimraf **/dist",
