@@ -57,6 +57,41 @@ export const TAG_MALFORMED: CodeMeta = {
         docsSlug: 'ADTK-IR-3002',
 } as const;
 
+export const TAG_PAYLOAD_MISSING: CodeMeta = {
+        code: `${DIAGNOSTIC_PREFIX_IR}-3003`,
+        category: 'error',
+        template: 'Tag %s requires a payload',
+        docsSlug: 'ADTK-IR-3003',
+} as const;
+
+export const TAG_PAYLOAD_INVALID: CodeMeta = {
+        code: `${DIAGNOSTIC_PREFIX_IR}-3004`,
+        category: 'error',
+        template: 'Tag %s has invalid payload: %s',
+        docsSlug: 'ADTK-IR-3004',
+} as const;
+
+export const TAG_INCOMPATIBLE_TYPE: CodeMeta = {
+        code: `${DIAGNOSTIC_PREFIX_IR}-3005`,
+        category: 'error',
+        template: 'Tag %s cannot be applied to type %s',
+        docsSlug: 'ADTK-IR-3005',
+} as const;
+
+export const TAG_FIELD_NOT_FOUND: CodeMeta = {
+        code: `${DIAGNOSTIC_PREFIX_IR}-3006`,
+        category: 'error',
+        template: 'Field %s referenced in tag %s does not exist',
+        docsSlug: 'ADTK-IR-3006',
+} as const;
+
+export const TAG_DUPLICATE: CodeMeta = {
+        code: `${DIAGNOSTIC_PREFIX_IR}-3007`,
+        category: 'error',
+        template: 'Duplicate tag %s on symbol',
+        docsSlug: 'ADTK-IR-3007',
+} as const;
+
 // 91xx: Internal / encoding
 export const CANONICAL_UNSUPPORTED_TYPE: CodeMeta = {
         code: `${DIAGNOSTIC_PREFIX_IR}-9101`,
