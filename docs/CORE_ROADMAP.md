@@ -325,40 +325,44 @@ type Annotation =
 
 These are **syntax-level representations**, not validated semantically.
 
----
+### **20. feat(core/jsdoc): JSDoc syntax parser + tag discovery**
 
-## 20. **feat(core/jsdoc): syntax parser**
+**File:** `src/jsdoc/parse.ts`
 
-### `src/jsdoc/parse.ts`
+**Responsibility**
+For each `RawSymbol`:
 
-**Responsibility:**
-Turn raw JSDoc tag strings into structured `ParsedAnnotation[]`.
+- Iterate raw JSDoc tags extracted from `ts/symbols.ts`
+- For each tag:
+     - Check tag name is recognized.
+     - Parse payload according to grammar.
+     - Emit `ParsedAnnotation` OR `Diagnostic`.
 
-**Input:**
-`RawSymbol.jsdoc: ParsedJsDocTag[]`
+Additionally:
 
-**Output:**
-`Result<ParsedAnnotation[], Diagnostic[]>`
+### **Tag Discovery Phase (inside parsing)**
 
-**Guarantees:**
+- For every successfully parsed annotation whose tag is in the caller’s `resolveTags` set:
+     - Register symbolId under that tag in the `TagIndex`.
 
-- Validates syntax and lexical payload shape.
-- Does _not_ inspect ResolvedType.
-- Does _not_ check existence of referenced fields.
-- Does _not_ check whether `@pk` is allowed on this type.
-- Never mutates types or symbols.
+**Input**
+`Map<SymbolId, RawSymbol>`
+`Set<TagName> resolveTags` (default = `{ entity }`, external packages may provide more)
 
-**Example:**
+**Output**
 
+```ts
+interface ParsedAnnotations {
+        annotations: Map<SymbolId, ParsedAnnotation[]>;
+        tagIndex: Map<TagName, SymbolId[]>; // discovery result
+        diagnostics: Diagnostic[];
+}
 ```
-@entity users
-→ { kind: "entity", name: "users" }
 
-@min 5
-→ { kind: "min", value: 5 }
-```
+**Notes**
 
----
+- No semantic checks (e.g. fk target existence, pk on scalar, etc.).
+- Only tag name → payload parsing and tag discovery.
 
 ## 21. **feat(core/jsdoc): semantic validator**
 
@@ -553,6 +557,7 @@ Snapshot formatting tests.
 project: Project
 symbols: Map<SymbolId, RawSymbol>
 parsedAnnotations: Map<SymbolId, ParsedAnnotation[]>
+tagIndex: Map<TagName, SymbolId[]>;
 resolvedTypes: Map<SymbolId, ResolvedType>
 validatedAnnotations: Map<SymbolId, ValidatedAnnotations>
 irNodes: Map<SymbolId, IRNode>
@@ -582,12 +587,13 @@ extractProgramIR(tsconfigPath)
 2. Collect symbols.
 3. Extract raw JSDoc tags (already in RawSymbol).
 4. Parse JSDoc into structured annotations.
-5. Resolve structural types for all relevant symbols.
-6. Validate annotations against types.
-7. Lower to IR.
-8. Canonical encode + stable hash.
-9. Consult + update cache.
-10. Assemble `IRProgram` from IR nodes.
+5. Determine `symbolsToResolve = ⋃ tagIndex[tag] for tag ∈ resolveTags`
+6. Resolve types for each symbol in `symbolsToResolve`
+7. Validate annotations against types.
+8. Lower to IR.
+9. Canonical encode + stable hash.
+10. Consult + update cache.
+11. Assemble `IRProgram` from IR nodes.
 
 **No dependency graph.
 No SCC computation.
