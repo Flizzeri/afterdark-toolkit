@@ -1,4 +1,4 @@
-// Test fixture for type resolution
+// tests/fixtures/types/test-types.ts
 
 // Primitives
 export type StringType = string;
@@ -12,33 +12,45 @@ export type UndefinedType = undefined;
 export type StringLiteral = 'hello';
 export type NumberLiteral = 42;
 export type BooleanLiteral = true;
-export type BigIntLiteral = 123n;
+export type FalseLiteral = false;
+export type BigIntLiteral = 9007199254740991n;
+export type NegativeBigIntLiteral = -123456789012345n;
 
-// Literal Unions (should be normalized)
-export type Status = 'active' | 'inactive' | 'pending';
+// Enum
+export enum NumericEnum {
+        A = 1,
+        B = 2,
+        C = 3,
+}
+
+export enum StringEnum {
+        Red = 'RED',
+        Green = 'GREEN',
+        Blue = 'BLUE',
+}
+
+export type NumericEnumMember = NumericEnum.A;
+export type StringEnumMember = StringEnum.Red;
+
+// Literal Unions
+export type Status = 'active' | 'pending' | 'inactive';
 export type Priority = 1 | 2 | 3;
-export type Flag = true | false;
+export type MixedLiterals = 'a' | 1 | true;
 
 // Arrays
 export type StringArray = string[];
-export type NestedArray = number[][];
+export type NumberArray = Array<number>;
+export type NestedArray = string[][];
 
 // Tuples
-export type Pair = [string, number];
-export type Triple = [string, number, boolean];
+export type SimpleTuple = [string, number];
+export type MixedTuple = [string, number, boolean];
+export type EmptyTuple = [];
 
 // Objects
 export interface SimpleObject {
         name: string;
         age: number;
-}
-
-export interface NestedObject {
-        user: SimpleObject;
-        metadata: {
-                created: string;
-                updated: string;
-        };
 }
 
 export interface OptionalProps {
@@ -51,78 +63,126 @@ export interface ReadonlyProps {
         name: string;
 }
 
-// Index signatures
 export interface WithStringIndex {
-        known: string;
-        [key: string]: string | number;
+        [key: string]: number;
 }
 
+export interface WithNumberIndex {
+        [key: number]: string;
+}
+
+export interface MixedWithIndex {
+        name: string;
+        [key: string]: string;
+}
+
+// Nested Objects
+export interface NestedObject {
+        outer: {
+                inner: {
+                        value: string;
+                };
+        };
+}
+
+// Records
 export type StringRecord = Record<string, number>;
 export type NumberRecord = Record<number, string>;
 
-// Unions (should be validated for homogeneity)
+// Unions
 export type StringOrNumber = string | number;
+export type NullableString = string | null;
+export type OptionalString = string | undefined;
+export type NullableObject = { id: string } | null;
 
-// Discriminated union
+// Discriminated Unions
 export type Shape =
         | { kind: 'circle'; radius: number }
         | { kind: 'square'; size: number }
         | { kind: 'rectangle'; width: number; height: number };
 
-// Intersections (should be flattened)
-export type PersonWithEmail = SimpleObject & { email: string };
-export type MultiIntersection = { a: string } & { b: number } & { c: boolean };
+// Heterogeneous unions (should fail)
+export type HeterogeneousUnion = { a: string } | string;
 
-// Intersection with conflicts (should fail)
-export type ConflictingIntersection = { x: string } & { x: number };
+// Intersections
+export type Person = { name: string; age: number };
+export type Email = { email: string };
+export type PersonWithEmail = Person & Email;
 
-// Recursive types
+export type TypeA = { a: string };
+export type TypeB = { b: number };
+export type TypeC = { c: boolean };
+export type MultiIntersection = TypeA & TypeB & TypeC;
+
+// Conflicting intersection (should fail)
+export type Conflict1 = { value: string };
+export type Conflict2 = { value: number };
+export type ConflictingIntersection = Conflict1 & Conflict2;
+
+// Intersection with index signatures
+export type WithIndexA = { [key: string]: number };
+export type WithIndexB = { [key: string]: string };
+export type ConflictingIndexSignatures = WithIndexA & WithIndexB;
+
+// Recursive Types
 export interface TreeNode {
         value: string;
         children: TreeNode[];
 }
 
 export interface LinkedList {
-        data: number;
+        value: number;
         next: LinkedList | null;
 }
 
-// Enums (should be lowered to literal unions)
-export enum Color {
-        Red = 'red',
-        Green = 'green',
-        Blue = 'blue',
-}
+export type RecursiveUnion = { value: string; next: RecursiveUnion } | null;
 
-export enum NumericEnum {
-        First = 1,
-        Second = 2,
-        Third = 3,
-}
+// Template Literals
+export type Greeting = `Hello, ${'world' | 'friend'}`;
 
-// Type aliases (should resolve or ref)
-export type AliasedString = string;
-export type AliasedObject = SimpleObject;
-export type ChainedAlias = AliasedString;
-
-// Template literals (should become string)
-export type Greeting = `Hello ${string}`;
-export type TemplatePattern = `${string}-${number}`;
-
-// Unsupported constructs
+// Unsupported Constructs
 export type FunctionType = (x: number) => string;
+export type ConstructorType = new (x: number) => Date;
 export type AnyType = any;
 export type UnknownType = unknown;
 export type NeverType = never;
 export type VoidType = void;
 
-// Conditional types (partial support - compiler must resolve)
-export type IsString<T> = T extends string ? 'yes' : 'no';
-export type ConcreteConditional = IsString<string>;
+// Type Aliases
+export type AliasedString = StringType;
+export type DoubleAliased = AliasedString;
 
-// Mapped type that should resolve
-export type ReadonlyObject<T> = {
-        readonly [P in keyof T]: T[P];
-};
+// Complex nested union
+export type ComplexUnion =
+        | { type: 'a'; data: string }
+        | { type: 'b'; data: number }
+        | { type: 'c'; data: boolean };
 
-export type ReadonlyPerson = ReadonlyObject<SimpleObject>;
+// Union with null (should be allowed)
+export type NullableUnion = { id: string; name: string } | { id: string; age: number } | null;
+
+// Circular type with union
+export interface CircularA {
+        value: string;
+        b: CircularB | null;
+}
+
+export interface CircularB {
+        value: number;
+        a: CircularA | null;
+}
+
+// Mixed object and properties with index signature
+export interface ComplexObject {
+        id: string;
+        data: {
+                nested: string;
+        };
+        [key: string]: any;
+}
+
+// Type with callable signature (should fail)
+export interface CallableInterface {
+        (x: number): string;
+        prop: string;
+}

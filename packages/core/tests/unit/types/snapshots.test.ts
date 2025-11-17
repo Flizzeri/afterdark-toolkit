@@ -155,7 +155,9 @@ describe('Type Resolution Snapshots', () => {
 
         it('produces stable output for template literals resolved to string', () => {
                 const templateJson = getResolvedCanonical('Greeting');
-                expect(templateJson).toBe('{"kind":"primitive","primitiveKind":"string"}');
+                expect(templateJson).toBe(
+                        '{"kind":"literalUnion","members":[{"kind":"literal","literalKind":"string","value":"Hello, friend"},{"kind":"literal","literalKind":"string","value":"Hello, world"}]}',
+                );
         });
 
         it('produces stable unsupported nodes', () => {

@@ -136,13 +136,61 @@ describe('Type Resolution', () => {
                         });
                 });
 
-                it('resolves boolean literal with kind', () => {
+                it('resolves boolean literal true with kind', () => {
                         const resolved = getExportedType('BooleanLiteral');
                         expect(resolved).toMatchObject({
                                 kind: 'literal',
                                 literalKind: 'boolean',
                                 value: true,
                         });
+                });
+
+                it('resolves boolean literal false with kind', () => {
+                        const resolved = getExportedType('FalseLiteral');
+                        expect(resolved).toMatchObject({
+                                kind: 'literal',
+                                literalKind: 'boolean',
+                                value: false,
+                        });
+                });
+
+                it('resolves bigint literal with kind', () => {
+                        const resolved = getExportedType('BigIntLiteral');
+                        expect(resolved.kind).toBe('literal');
+                        if (resolved.kind === 'literal') {
+                                expect(resolved.literalKind).toBe('bigint');
+                                expect(typeof resolved.value).toBe('bigint');
+                                expect(resolved.value).toBe(9007199254740991n);
+                        }
+                });
+
+                it('resolves negative bigint literal', () => {
+                        const resolved = getExportedType('NegativeBigIntLiteral');
+                        expect(resolved.kind).toBe('literal');
+                        if (resolved.kind === 'literal') {
+                                expect(resolved.literalKind).toBe('bigint');
+                                expect(typeof resolved.value).toBe('bigint');
+                        }
+                });
+        });
+
+        describe('Enum Literals', () => {
+                it('resolves numeric enum member as number literal', () => {
+                        const resolved = getExportedType('NumericEnumMember');
+                        expect(resolved.kind).toBe('literal');
+                        if (resolved.kind === 'literal') {
+                                expect(resolved.literalKind).toBe('number');
+                                expect(resolved.value).toBe(1);
+                        }
+                });
+
+                it('resolves string enum member as string literal', () => {
+                        const resolved = getExportedType('StringEnumMember');
+                        expect(resolved.kind).toBe('literal');
+                        if (resolved.kind === 'literal') {
+                                expect(resolved.literalKind).toBe('string');
+                                expect(resolved.value).toBe('RED');
+                        }
                 });
         });
 
@@ -152,10 +200,8 @@ describe('Type Resolution', () => {
                         expect(resolved.kind).toBe('literalUnion');
                         expect(resolved.members).toHaveLength(3);
 
-                        // Members should be ResolvedLiteral objects, not raw values
                         expect(resolved.members.every((m) => m.kind === 'literal')).toBe(true);
 
-                        // Should be sorted
                         const values = resolved.members.map((m) => m.value);
                         expect(values).toEqual(['active', 'inactive', 'pending']);
                 });
@@ -167,6 +213,13 @@ describe('Type Resolution', () => {
 
                         const values = resolved.members.map((m) => m.value);
                         expect(values).toEqual([1, 2, 3]);
+                });
+
+                it('normalizes mixed literal union', () => {
+                        const resolved = getExportedType('MixedLiterals') as ResolvedLiteralUnion;
+                        expect(resolved.kind).toBe('literalUnion');
+                        expect(resolved.members.length).toBeGreaterThan(0);
+                        expect(resolved.members.every((m) => m.kind === 'literal')).toBe(true);
                 });
         });
 
@@ -182,7 +235,18 @@ describe('Type Resolution', () => {
                         }
                 });
 
-                it('resolves nested array', () => {
+                it('resolves Array<T> syntax', () => {
+                        const resolved = getExportedType('NumberArray');
+                        expect(resolved.kind).toBe('array');
+                        if (resolved.kind === 'array') {
+                                expect(resolved.element).toEqual({
+                                        kind: 'primitive',
+                                        primitiveKind: 'number',
+                                });
+                        }
+                });
+
+                it('resolves nested arrays', () => {
                         const resolved = getExportedType('NestedArray');
                         expect(resolved.kind).toBe('array');
                         if (resolved.kind === 'array') {
@@ -192,8 +256,8 @@ describe('Type Resolution', () => {
         });
 
         describe('Tuples', () => {
-                it('resolves pair tuple', () => {
-                        const resolved = getExportedType('Pair');
+                it('resolves simple tuple', () => {
+                        const resolved = getExportedType('SimpleTuple');
                         expect(resolved.kind).toBe('tuple');
                         if (resolved.kind === 'tuple') {
                                 expect(resolved.elements).toHaveLength(2);
@@ -207,15 +271,30 @@ describe('Type Resolution', () => {
                                 });
                         }
                 });
+
+                it('resolves mixed tuple', () => {
+                        const resolved = getExportedType('MixedTuple');
+                        expect(resolved.kind).toBe('tuple');
+                        if (resolved.kind === 'tuple') {
+                                expect(resolved.elements).toHaveLength(3);
+                        }
+                });
+
+                it('resolves empty tuple', () => {
+                        const resolved = getExportedType('EmptyTuple');
+                        expect(resolved.kind).toBe('tuple');
+                        if (resolved.kind === 'tuple') {
+                                expect(resolved.elements).toHaveLength(0);
+                        }
+                });
         });
 
         describe('Objects', () => {
-                it('resolves simple object with sorted properties', () => {
+                it('resolves interface with sorted properties', () => {
                         const resolved = getExportedInterface('SimpleObject') as ResolvedObject;
                         expect(resolved.kind).toBe('object');
                         expect(resolved.properties).toHaveLength(2);
 
-                        // Properties should be sorted by name
                         expect(resolved.properties[0]?.name).toBe('age');
                         expect(resolved.properties[1]?.name).toBe('name');
 
@@ -251,11 +330,45 @@ describe('Type Resolution', () => {
                         expect(nameProp?.readonly).toBe(false);
                 });
 
-                it('preserves index signatures', () => {
+                it('preserves string index signatures', () => {
                         const resolved = getExportedInterface('WithStringIndex') as ResolvedObject;
                         expect(resolved.kind).toBe('object');
                         expect(resolved.indexSignature).toBeDefined();
                         expect(resolved.indexSignature?.keyType).toBe('string');
+                        expect(resolved.indexSignature?.valueType).toEqual({
+                                kind: 'primitive',
+                                primitiveKind: 'number',
+                        });
+                });
+
+                it('preserves number index signatures', () => {
+                        const resolved = getExportedInterface('WithNumberIndex') as ResolvedObject;
+                        expect(resolved.kind).toBe('object');
+                        expect(resolved.indexSignature).toBeDefined();
+                        expect(resolved.indexSignature?.keyType).toBe('number');
+                });
+
+                it('handles mixed properties with index signature', () => {
+                        const resolved = getExportedInterface('MixedWithIndex') as ResolvedObject;
+                        expect(resolved.kind).toBe('object');
+                        expect(resolved.properties.length).toBeGreaterThan(0);
+                        expect(resolved.indexSignature).toBeDefined();
+                });
+
+                it('resolves nested objects', () => {
+                        const resolved = getExportedInterface('NestedObject') as ResolvedObject;
+                        expect(resolved.kind).toBe('object');
+
+                        const outerProp = resolved.properties.find((p) => p.name === 'outer');
+                        expect(outerProp).toBeDefined();
+                        expect(outerProp?.type.kind).toBe('object');
+
+                        if (outerProp?.type.kind === 'object') {
+                                const innerProp = outerProp.type.properties.find(
+                                        (p) => p.name === 'inner',
+                                );
+                                expect(innerProp?.type.kind).toBe('object');
+                        }
                 });
         });
 
@@ -285,9 +398,47 @@ describe('Type Resolution', () => {
                         expect(resolved.kind).toBe('union');
                         if (resolved.kind === 'union') {
                                 expect(resolved.members).toHaveLength(2);
-                                // Should be sorted by kind
                                 expect(resolved.members[0]?.kind).toBe('primitive');
                                 expect(resolved.members[1]?.kind).toBe('primitive');
+                        }
+                });
+
+                it('allows nullable string (string | null)', () => {
+                        const resolved = getExportedType('NullableString');
+                        expect(resolved.kind).toBe('union');
+                        if (resolved.kind === 'union') {
+                                expect(resolved.members).toHaveLength(2);
+                                const hasNull = resolved.members.some(
+                                        (m) => m.kind === 'primitive' && m.primitiveKind === 'null',
+                                );
+                                expect(hasNull).toBe(true);
+                        }
+                });
+
+                it('allows optional string (string | undefined)', () => {
+                        const resolved = getExportedType('OptionalString');
+                        expect(resolved.kind).toBe('union');
+                        if (resolved.kind === 'union') {
+                                const hasUndefined = resolved.members.some(
+                                        (m) =>
+                                                m.kind === 'primitive' &&
+                                                m.primitiveKind === 'undefined',
+                                );
+                                expect(hasUndefined).toBe(true);
+                        }
+                });
+
+                it('allows nullable object (object | null)', () => {
+                        const resolved = getExportedType('NullableObject');
+                        expect(resolved.kind).toBe('union');
+                        if (resolved.kind === 'union') {
+                                expect(resolved.members).toHaveLength(2);
+                                const hasObject = resolved.members.some((m) => m.kind === 'object');
+                                const hasNull = resolved.members.some(
+                                        (m) => m.kind === 'primitive' && m.primitiveKind === 'null',
+                                );
+                                expect(hasObject).toBe(true);
+                                expect(hasNull).toBe(true);
                         }
                 });
 
@@ -300,6 +451,34 @@ describe('Type Resolution', () => {
                                 expect(resolved.discriminant?.values).toHaveLength(3);
                         }
                 });
+
+                it('handles complex discriminated union', () => {
+                        const resolved = getExportedType('ComplexUnion');
+                        expect(resolved.kind).toBe('union');
+                        if (resolved.kind === 'union') {
+                                expect(resolved.members.length).toBeGreaterThan(0);
+                                expect(resolved.discriminant?.propertyName).toBe('type');
+                        }
+                });
+
+                it('allows union with null alongside objects', () => {
+                        const resolved = getExportedType('NullableUnion');
+                        expect(resolved.kind).toBe('union');
+                        if (resolved.kind === 'union') {
+                                const objectMembers = resolved.members.filter(
+                                        (m) => m.kind === 'object',
+                                );
+                                const nullMembers = resolved.members.filter(
+                                        (m) => m.kind === 'primitive' && m.primitiveKind === 'null',
+                                );
+                                expect(objectMembers.length).toBeGreaterThan(0);
+                                expect(nullMembers.length).toBe(1);
+                        }
+                });
+
+                it('rejects heterogeneous unions', () => {
+                        expectError('HeterogeneousUnion');
+                });
         });
 
         describe('Intersections', () => {
@@ -308,7 +487,6 @@ describe('Type Resolution', () => {
                         expect(resolved.kind).toBe('object');
                         expect(resolved.properties).toHaveLength(3);
 
-                        // Should have properties from both types, sorted
                         const names = resolved.properties.map((p) => p.name);
                         expect(names).toEqual(['age', 'email', 'name']);
                 });
@@ -324,6 +502,10 @@ describe('Type Resolution', () => {
 
                 it('rejects conflicting intersections', () => {
                         expectError('ConflictingIntersection');
+                });
+
+                it('rejects conflicting index signatures in intersection', () => {
+                        expectError('ConflictingIndexSignatures');
                 });
         });
 
@@ -349,11 +531,54 @@ describe('Type Resolution', () => {
                         expect(nextProp).toBeDefined();
                         expect(nextProp?.type.kind).toBe('union');
                 });
+
+                it('resolves recursive union type', () => {
+                        const resolved = getExportedType('RecursiveUnion');
+                        expect(resolved.kind).toBe('union');
+                        if (resolved.kind === 'union') {
+                                const hasObject = resolved.members.some((m) => m.kind === 'object');
+                                const hasNull = resolved.members.some(
+                                        (m) => m.kind === 'primitive' && m.primitiveKind === 'null',
+                                );
+                                expect(hasObject).toBe(true);
+                                expect(hasNull).toBe(true);
+                        }
+                });
+
+                it('handles circular references between interfaces', () => {
+                        const resolvedA = getExportedInterface('CircularA') as ResolvedObject;
+                        expect(resolvedA.kind).toBe('object');
+
+                        const bProp = resolvedA.properties.find((p) => p.name === 'b');
+                        expect(bProp).toBeDefined();
+
+                        const resolvedB = getExportedInterface('CircularB') as ResolvedObject;
+                        expect(resolvedB.kind).toBe('object');
+                });
         });
 
         describe('Template Literals', () => {
-                it('resolves template literal to string primitive', () => {
+                it('resolves template literal to literal union', () => {
                         const resolved = getExportedType('Greeting');
+                        // Template literals resolve to their constituent literal values
+                        expect(resolved.kind).toBe('literalUnion');
+                        if (resolved.kind === 'literalUnion') {
+                                expect(resolved.members.length).toBeGreaterThan(0);
+                        }
+                });
+        });
+
+        describe('Type Aliases', () => {
+                it('resolves simple type alias', () => {
+                        const resolved = getExportedType('AliasedString');
+                        expect(resolved).toEqual({
+                                kind: 'primitive',
+                                primitiveKind: 'string',
+                        });
+                });
+
+                it('resolves chained type aliases', () => {
+                        const resolved = getExportedType('DoubleAliased');
                         expect(resolved).toEqual({
                                 kind: 'primitive',
                                 primitiveKind: 'string',
@@ -364,6 +589,10 @@ describe('Type Resolution', () => {
         describe('Unsupported Constructs', () => {
                 it('rejects function types', () => {
                         expectError('FunctionType');
+                });
+
+                it('rejects constructor types', () => {
+                        expectError('ConstructorType');
                 });
 
                 it('rejects any type', () => {
@@ -390,6 +619,10 @@ describe('Type Resolution', () => {
                         if (resolved.kind === 'unsupported') {
                                 expect(resolved.reason).toContain('void');
                         }
+                });
+
+                it('rejects callable interfaces', () => {
+                        expectError('CallableInterface', true);
                 });
         });
 });
