@@ -1,11 +1,11 @@
 // src/types/types.ts
 
-import type { SymbolId } from '../shared/primitives.js';
+import type { SymbolId, FilePath } from '../shared/primitives.js';
 
 export type PrimitiveKind = 'string' | 'number' | 'boolean' | 'bigint' | 'null' | 'undefined';
 
 export interface SourceSpan {
-        readonly filePath: string;
+        readonly filePath: FilePath;
         readonly startLine: number;
         readonly startColumn: number;
         readonly endLine: number;
