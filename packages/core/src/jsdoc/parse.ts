@@ -35,6 +35,8 @@ export interface ParseOptions {
 
 const DEFAULT_RESOLVE_TAGS: ReadonlySet<CoreTagName> = new Set([CORE_TAGS.ENTITY]);
 
+const REPEATABLE_TAGS: ReadonlySet<CoreTagName> = new Set([CORE_TAGS.INDEX]);
+
 export function parseJsDocAnnotations(
         symbols: ReadonlyMap<SymbolId, RawSymbol>,
         options: ParseOptions = {},
@@ -71,7 +73,20 @@ export function parseJsDocAnnotations(
                                 continue;
                         }
 
-                        seenTags.add(tag.name);
+                        const isRepeatable = REPEATABLE_TAGS.has(tag.name as CoreTagName);
+                        if (!isRepeatable) {
+                                if (seenTags.has(tag.name)) {
+                                        diagnostics.push(
+                                                makeDiagnostic({
+                                                        meta: TAG_DUPLICATE,
+                                                        args: [tag.name],
+                                                        context: { entity: symbolId },
+                                                }),
+                                        );
+                                        continue;
+                                }
+                                seenTags.add(tag.name);
+                        }
 
                         const parsed = parseTag(tag, symbolId);
                         if (parsed.ok) {
