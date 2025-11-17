@@ -96,6 +96,7 @@ export default [
                                 afterAll: 'readonly',
                                 beforeEach: 'readonly',
                                 afterEach: 'readonly',
+                                setTimeout: 'readonly',
                         },
                 },
                 rules: {
