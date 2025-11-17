@@ -7,6 +7,15 @@ type DiagnosticPrefix = typeof DIAGNOSTIC_PREFIX;
 
 export type DiagnosticCategory = 'error' | 'warning' | 'info';
 
+// Represents a source location span (1-based line/column).
+export interface SourceSpan {
+        readonly filePath: FilePath; // normalized posix path
+        readonly startLine: number; // 1-based
+        readonly startColumn: number; // 1-based
+        readonly endLine: number; // 1-based
+        readonly endColumn: number; // 1-based
+}
+
 export interface DiagnosticLocation {
         readonly filePath?: FilePath; // normalized posix path
         readonly line?: number; // 1-based

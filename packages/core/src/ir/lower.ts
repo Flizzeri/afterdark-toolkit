@@ -15,8 +15,9 @@ import type {
         IRUnsupported,
 } from './nodes.js';
 import type { ParsedAnnotation } from '../jsdoc/annotations.js';
+import type { SourceSpan } from '../shared/diagnostics.js';
 import type { SymbolId } from '../shared/primitives.js';
-import type { SourceSpan, ResolvedType } from '../types/types.js';
+import type { ResolvedType } from '../types/types.js';
 
 export interface LowerInput {
         readonly symbolId: SymbolId;

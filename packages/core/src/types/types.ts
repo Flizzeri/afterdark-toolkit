@@ -1,16 +1,9 @@
 // src/types/types.ts
 
-import type { SymbolId, FilePath } from '../shared/primitives.js';
+import type { SourceSpan } from '../shared/diagnostics.js';
+import type { SymbolId } from '../shared/primitives.js';
 
 export type PrimitiveKind = 'string' | 'number' | 'boolean' | 'bigint' | 'null' | 'undefined';
-
-export interface SourceSpan {
-        readonly filePath: FilePath;
-        readonly startLine: number;
-        readonly startColumn: number;
-        readonly endLine: number;
-        readonly endColumn: number;
-}
 
 export interface TypeMetadata {
         readonly originSymbol?: SymbolId;

@@ -1,8 +1,8 @@
 // src/ir/nodes.ts
 
 import type { ParsedAnnotation } from '../jsdoc/annotations.js';
+import type { SourceSpan } from '../shared/diagnostics.js';
 import type { SymbolId, EntityName } from '../shared/primitives.js';
-import type { SourceSpan } from '../types/types.js';
 
 export interface IRMetadata {
         readonly symbolId: SymbolId;
