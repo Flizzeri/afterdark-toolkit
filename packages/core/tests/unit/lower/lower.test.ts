@@ -4,8 +4,9 @@ import { describe, it, expect } from 'vitest';
 
 import { lowerToIR } from '../../../src/ir/lower.js';
 import type { ParsedAnnotation } from '../../../src/jsdoc/annotations.js';
+import type { SourceSpan } from '../../../src/shared/diagnostics.js';
 import type { SymbolId } from '../../../src/shared/primitives.js';
-import type { ResolvedType, SourceSpan } from '../../../src/types/types.js';
+import type { ResolvedType } from '../../../src/types/types.js';
 
 describe('IR Lowering', () => {
         const testSymbolId = 'Test.Symbol' as SymbolId;
