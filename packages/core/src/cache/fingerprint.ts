@@ -3,7 +3,6 @@
 import { promises as fs2 } from 'node:fs';
 import * as path2 from 'node:path';
 
-import { encodeCanonical } from '../canonical/encode.js';
 import { computeHash } from '../canonical/hash.js';
 import { CACHE_IO_ERROR } from '../diagnostics/codes.js';
 import { makeDiagnostic } from '../diagnostics/factory.js';
@@ -60,7 +59,7 @@ export async function computeFingerprint(
                         ...parts,
                 } as const;
 
-                const fp = computeHash(encodeCanonical(envelope)) as Result<Fingerprint>;
+                const fp = computeHash(envelope) as Result<Fingerprint>;
                 return isErr(fp) ? fp : ok({ fingerprint: fp.value, parts });
         } catch {
                 const d = makeDiagnostic({ meta: CACHE_IO_ERROR, args: ['fingerprint'] });

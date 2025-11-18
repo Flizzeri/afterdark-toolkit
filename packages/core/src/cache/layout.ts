@@ -28,7 +28,7 @@ export interface CacheEntryEnvelope<T> {
  * Resolve the canonical cache root: <repo>/.afterdarktk/cache
  */
 export function resolveCacheRoot(cwd: string): CacheRoot {
-        return path.resolve(cwd, `.${CACHE_ROOT}`, 'cache') as CacheRoot;
+        return path.resolve(cwd, CACHE_ROOT) as CacheRoot;
 }
 
 export function resolveCacheDir(root: CacheRoot, kind: CacheKind): CachePath {
@@ -90,7 +90,7 @@ export async function atomicWriteFile(
 
 export async function writeJsonEnvelope<T>(filePath: CachePath, value: T): Promise<Result<void>> {
         const payload = value as T;
-        const hashRes = computeHash(encodeCanonical(payload));
+        const hashRes = computeHash(payload);
         if (isErr(hashRes)) return hashRes;
         const checksum = hashRes.value;
         const envelope: CacheEntryEnvelope<T> = {
@@ -117,7 +117,7 @@ export async function readJsonEnvelope<T>(filePath: CachePath): Promise<Result<T
                         return err<T>([d]);
                 }
 
-                const expected = computeHash(encodeCanonical(parsed.payload));
+                const expected = computeHash(parsed.payload);
                 if (isErr(expected)) return expected;
                 if (expected.value !== parsed.checksum) {
                         const d: Diagnostic = makeDiagnostic({
