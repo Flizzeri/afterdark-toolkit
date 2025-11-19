@@ -12,11 +12,11 @@ import {
         isErr,
         ok,
         err,
+        makeDiagnostic,
 } from '@afterdarktk/shared';
 
 import { computeHash } from '../canonical/hash.js';
 import { CACHE_IO_ERROR } from '../diagnostics/codes.js';
-import { makeDiagnostic } from '../diagnostics/factory.js';
 
 export interface FingerprintInput {
         readonly content: CanonicalJson | Uint8Array; // canonical IR or source summary

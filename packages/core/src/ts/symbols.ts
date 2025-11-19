@@ -1,5 +1,13 @@
 // src/ts/symbols.ts
-import { type SymbolId, type JsDocTagName, ok, err, type Result } from '@afterdarktk/shared';
+import {
+        type SymbolId,
+        type JsDocTagName,
+        type SourceSpan,
+        ok,
+        err,
+        type Result,
+        makeDiagnostic,
+} from '@afterdarktk/shared';
 import {
         type Node,
         type Symbol as TsSymbol,
@@ -16,8 +24,6 @@ import {
 import { normalizePath } from './fs.js';
 import type { ProgramWrapper } from './program.js';
 import { TYPE_UNRESOLVED } from '../diagnostics/codes.js';
-import { makeDiagnostic } from '../diagnostics/factory.js';
-import type { SourceSpan } from '../shared/diagnostics.js';
 
 // Represents a parsed JSDoc tag with stable structure.
 interface ParsedJsDocTag {

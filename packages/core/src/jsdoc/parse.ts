@@ -1,6 +1,11 @@
 // src/jsdoc/parse.ts
 
-import type { JsDocTagName, SymbolId } from '@afterdarktk/shared';
+import {
+        type JsDocTagName,
+        type SymbolId,
+        type Diagnostic,
+        makeDiagnostic,
+} from '@afterdarktk/shared';
 
 import type { ParsedAnnotation, Action } from './annotations.js';
 import { CORE_TAGS, TAG_GRAMMARS, ALL_CORE_TAG_NAMES, type CoreTagName } from './tags.js';
@@ -11,8 +16,6 @@ import {
         TAG_PAYLOAD_INVALID,
         TAG_DUPLICATE,
 } from '../diagnostics/codes.js';
-import { makeDiagnostic } from '../diagnostics/factory.js';
-import type { Diagnostic } from '../shared/diagnostics.js';
 
 export interface RawJsDocTag {
         readonly name: JsDocTagName;

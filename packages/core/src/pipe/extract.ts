@@ -5,6 +5,8 @@ import {
         type Hash,
         type FilePath,
         type Fingerprint,
+        type Diagnostic,
+        type SourceSpan,
         ok,
         err,
         isErr,
@@ -28,7 +30,6 @@ import type { IRProgram, IREntity, IRNode } from '../ir/nodes.js';
 import { parseJsDocAnnotations, type RawSymbol } from '../jsdoc/parse.js';
 import { CORE_TAGS } from '../jsdoc/tags.js';
 import { validateAnnotations } from '../jsdoc/validate.js';
-import type { Diagnostic, SourceSpan } from '../shared/diagnostics.js';
 import { createProgram } from '../ts/program.js';
 import {
         getSymbolId,

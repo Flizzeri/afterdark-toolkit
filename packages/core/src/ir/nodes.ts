@@ -1,9 +1,8 @@
 // src/ir/nodes.ts
 
-import type { SymbolId, EntityName } from '@afterdarktk/shared';
+import type { SymbolId, EntityName, SourceSpan } from '@afterdarktk/shared';
 
 import type { ParsedAnnotation } from '../jsdoc/annotations.js';
-import type { SourceSpan } from '../shared/diagnostics.js';
 
 export interface IRMetadata {
         readonly symbolId: SymbolId;

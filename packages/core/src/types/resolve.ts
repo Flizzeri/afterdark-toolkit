@@ -1,6 +1,13 @@
 // src/types/resolve.ts
 
-import { type SymbolId, ok, err, type Result } from '@afterdarktk/shared';
+import {
+        type SymbolId,
+        ok,
+        err,
+        type Result,
+        type Diagnostic,
+        makeDiagnostic,
+} from '@afterdarktk/shared';
 import {
         type Type as TsType,
         type Symbol as TsSymbol,
@@ -28,8 +35,6 @@ import {
         UNION_HETEROGENEOUS,
         INTERSECTION_CONFLICT,
 } from '../diagnostics/codes.js';
-import { makeDiagnostic } from '../diagnostics/factory.js';
-import type { Diagnostic } from '../shared/diagnostics.js';
 import { getSymbolId } from '../ts/symbols.js';
 
 interface ResolutionContext {

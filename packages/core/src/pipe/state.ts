@@ -1,6 +1,6 @@
 // src/pipe/state.ts
 
-import type { SymbolId, Hash } from '@afterdarktk/shared';
+import type { SymbolId, Hash, Diagnostic } from '@afterdarktk/shared';
 import type { Project } from 'ts-morph';
 
 import type { IRNode } from '../ir/nodes.js';
@@ -8,7 +8,6 @@ import type { ParsedAnnotation } from '../jsdoc/annotations.js';
 import type { RawSymbol } from '../jsdoc/parse.js';
 import type { CoreTagName } from '../jsdoc/tags.js';
 import type { ValidatedAnnotations } from '../jsdoc/validate.js';
-import type { Diagnostic } from '../shared/diagnostics.js';
 import type { ResolvedType } from '../types/types.js';
 
 export interface ExtractionState {

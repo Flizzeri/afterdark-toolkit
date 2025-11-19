@@ -2,11 +2,10 @@
 
 import { createHash } from 'crypto';
 
-import { type Result, type Hash, ok, err, isErr } from '@afterdarktk/shared';
+import { type Result, type Hash, ok, err, isErr, makeDiagnostic } from '@afterdarktk/shared';
 
 import { encodeCanonical, type CanonicalEncodeConfig } from '../canonical/encode.js';
 import { CANONICAL_UNSUPPORTED_TYPE } from '../diagnostics/codes.js';
-import { makeDiagnostic } from '../diagnostics/factory.js';
 
 /**
  * Computes a deterministic SHA-256 hash of the canonical JSON representation

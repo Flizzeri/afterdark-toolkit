@@ -3,10 +3,9 @@
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 
-import { type FilePath, ok, err, type Result } from '@afterdarktk/shared';
+import { type FilePath, ok, err, type Result, makeDiagnostic } from '@afterdarktk/shared';
 
 import { CACHE_IO_ERROR } from '../diagnostics/codes.js';
-import { makeDiagnostic } from '../diagnostics/factory.js';
 
 /**
  * Normalizes a file path to POSIX format (forward slashes) for cross-platform stability.
