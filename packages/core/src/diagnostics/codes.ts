@@ -1,7 +1,6 @@
 // src/diagnostics/codes.ts
 
-import { DIAGNOSTIC_PREFIX } from '../shared/constants.js';
-import type { CodeMeta } from '../shared/diagnostics.js';
+import { DIAGNOSTIC_PREFIX, type CodeMeta } from '@afterdarktk/shared';
 
 const DIAGNOSTIC_PREFIX_IR = `${DIAGNOSTIC_PREFIX}-IR` as const;
 

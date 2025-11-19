@@ -2,10 +2,10 @@
 
 import path from 'node:path';
 
+import { isOk, isErr } from '@afterdarktk/shared';
 import { Project } from 'ts-morph';
 import { describe, it, expect, beforeAll } from 'vitest';
 
-import { isOk, isErr } from '../../../src/shared/result.js';
 import { resolveSymbolType } from '../../../src/types/resolve.js';
 import type {
         ResolvedType,

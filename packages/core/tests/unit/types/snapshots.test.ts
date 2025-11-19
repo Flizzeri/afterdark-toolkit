@@ -2,11 +2,11 @@
 
 import path from 'node:path';
 
+import { isOk } from '@afterdarktk/shared';
 import { Project } from 'ts-morph';
 import { describe, it, expect, beforeAll } from 'vitest';
 
 import { encodeCanonical } from '../../../src/canonical/encode.js';
-import { isOk } from '../../../src/shared/result.js';
 import { resolveSymbolType } from '../../../src/types/resolve.js';
 
 describe('Type Resolution Snapshots', () => {

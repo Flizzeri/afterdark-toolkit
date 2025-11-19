@@ -1,5 +1,15 @@
 // src/pipe/extract.ts
-import type { SymbolId, EntityName, Hash, FilePath, Fingerprint } from '@afterdarktk/shared';
+import {
+        type SymbolId,
+        type EntityName,
+        type Hash,
+        type FilePath,
+        type Fingerprint,
+        ok,
+        err,
+        isErr,
+        type Result,
+} from '@afterdarktk/shared';
 import { version as tsVersion } from 'typescript';
 
 import type { ExtractionState } from './state.js';
@@ -19,7 +29,6 @@ import { parseJsDocAnnotations, type RawSymbol } from '../jsdoc/parse.js';
 import { CORE_TAGS } from '../jsdoc/tags.js';
 import { validateAnnotations } from '../jsdoc/validate.js';
 import type { Diagnostic, SourceSpan } from '../shared/diagnostics.js';
-import { ok, err, isErr, type Result } from '../shared/result.js';
 import { createProgram } from '../ts/program.js';
 import {
         getSymbolId,

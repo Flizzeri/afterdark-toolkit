@@ -1,6 +1,6 @@
 // core/canonical/encode.ts
 
-import type { CanonicalJson } from '@afterdarktk/shared';
+import { type Result, type CanonicalJson, ok, err } from '@afterdarktk/shared';
 
 import {
         CANONICAL_UNSUPPORTED_TYPE,
@@ -9,7 +9,6 @@ import {
 } from '../diagnostics/codes.js';
 import { makeDiagnostic } from '../diagnostics/factory.js';
 import type { Diagnostic } from '../shared/diagnostics.js';
-import { ok, err, type Result } from '../shared/result.js';
 
 type JsonPrimitive = string | number | boolean | null;
 type JsonValue = JsonPrimitive | JsonValue[] | { readonly [k: string]: JsonValue };

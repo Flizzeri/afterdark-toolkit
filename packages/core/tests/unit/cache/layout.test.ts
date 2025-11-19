@@ -3,6 +3,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+import { isOk, isErr } from '@afterdarktk/shared';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 import {
@@ -15,7 +16,6 @@ import {
         cacheFileFor,
         type CachePath,
 } from '../../../src/cache/layout.js';
-import { isOk, isErr } from '../../../src/shared/result.js';
 
 describe('Cache Layout', () => {
         let tmpDir: string;

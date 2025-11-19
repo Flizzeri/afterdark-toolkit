@@ -3,12 +3,20 @@
 import { promises as fs2 } from 'node:fs';
 import * as path2 from 'node:path';
 
-import type { Fingerprint, Hash, FilePath, CanonicalJson } from '@afterdarktk/shared';
+import {
+        type Fingerprint,
+        type Hash,
+        type FilePath,
+        type CanonicalJson,
+        type Result,
+        isErr,
+        ok,
+        err,
+} from '@afterdarktk/shared';
 
 import { computeHash } from '../canonical/hash.js';
 import { CACHE_IO_ERROR } from '../diagnostics/codes.js';
 import { makeDiagnostic } from '../diagnostics/factory.js';
-import { ok, err, isErr, type Result } from '../shared/result.js';
 
 export interface FingerprintInput {
         readonly content: CanonicalJson | Uint8Array; // canonical IR or source summary

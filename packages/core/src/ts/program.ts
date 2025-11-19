@@ -1,12 +1,11 @@
 // src/ts/program.ts
 
-import type { FilePath } from '@afterdarktk/shared';
+import { type FilePath, ok, err, type Result } from '@afterdarktk/shared';
 import { Project, type CompilerOptions } from 'ts-morph';
 
 import { normalizePath, fileExists } from './fs.js';
 import { TYPE_UNRESOLVED } from '../diagnostics/codes.js';
 import { makeDiagnostic } from '../diagnostics/factory.js';
-import { ok, err, type Result } from '../shared/result.js';
 
 /**
  * Stable compiler options enforced by the toolkit.

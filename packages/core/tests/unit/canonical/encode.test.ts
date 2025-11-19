@@ -1,9 +1,9 @@
 // tests/unit/canonical/encode.test.ts
 
+import { isOk, isErr } from '@afterdarktk/shared';
 import { describe, it, expect } from 'vitest';
 
 import { encodeCanonical } from '../../../src/canonical/encode.js';
-import { isOk, isErr } from '../../../src/shared/result.js';
 
 describe('Canonical Encoding', () => {
         describe('Primitives', () => {

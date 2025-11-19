@@ -1,10 +1,11 @@
 // src/jsdoc/validate.ts
 
+import { ok, err, type Result } from '@afterdarktk/shared';
+
 import type { ParsedAnnotation } from './annotations.js';
 import { TAG_INCOMPATIBLE_TYPE, TAG_FIELD_NOT_FOUND, TAG_MALFORMED } from '../diagnostics/codes.js';
 import { makeDiagnostic } from '../diagnostics/factory.js';
 import type { Diagnostic } from '../shared/diagnostics.js';
-import { ok, err, type Result } from '../shared/result.js';
 import type { ResolvedType } from '../types/types.js';
 
 export interface ValidatedAnnotations {

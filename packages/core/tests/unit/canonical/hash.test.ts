@@ -1,9 +1,9 @@
 // tests/unit/canonical/hash.test.ts
 
+import { isOk, isErr } from '@afterdarktk/shared';
 import { describe, it, expect } from 'vitest';
 
 import { computeHash } from '../../../src/canonical/hash.js';
-import { isOk, isErr } from '../../../src/shared/result.js';
 
 describe('Canonical Hashing', () => {
         describe('Basic Hashing', () => {

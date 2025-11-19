@@ -1,6 +1,7 @@
 // src/diagnostics/factory.ts
 
-import { DOCS_BASE_URL } from '../shared/constants.js';
+import { DOCS_BASE_URL } from '@afterdarktk/shared';
+
 import type {
         CodeMeta,
         Diagnostic,

@@ -3,11 +3,11 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 
+import { isOk, isErr } from '@afterdarktk/shared';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 import { resolveCacheRoot } from '../../src/cache/layout.js';
 import { extractProgramIR } from '../../src/pipe/extract.js';
-import { isOk, isErr } from '../../src/shared/result.js';
 
 describe('extractProgramIR', () => {
         const fixturePath = path.resolve(__dirname, '../fixtures/e2e/simple-schema');
