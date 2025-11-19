@@ -1,5 +1,8 @@
 // packages/shared/src/index.ts
 
-export type * from './primitives/types.js';
+export * from './primitives/types.js';
+export * from './primitives/constants.js';
 
-export { assertNever } from './utils/utilities.js';
+export type { Result } from './utils/types.js';
+
+export { assertNever, ok, err, isOk, isErr } from './utils/utilities.js';
