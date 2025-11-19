@@ -6,7 +6,6 @@ type Branded<T, B extends string> = T & { readonly __brand: B };
 export type FilePath = Branded<string, 'FilePath'>;
 export type EntityName = Branded<string, 'EntityName'>;
 export type Hash = Branded<string, 'Hash'>;
-export type DiagnosticCode = Branded<string, 'DiagnosticCode'>;
 export type VersionString = Branded<string, 'VersionString'>;
 export type CanonicalJson = Branded<string, 'BrandedJson'>;
 export type Fingerprint = Branded<string, 'Fingerprint'>;
