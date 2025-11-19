@@ -1,0 +1,30 @@
+{
+        "name": "@afterdarktk/shared",
+        "version": "0.1.0",
+        "description": "Shared utilities, branded primitive types, diagnostics, and functional helpers for the Afterdark Toolkit.",
+        "license": "MIT",
+        "type": "module",
+        "main": "./dist/index.js",
+        "module": "./dist/index.js",
+        "types": "./dist/index.d.ts",
+        "exports": {
+                ".": {
+                        "types": "./dist/index.d.ts",
+                        "import": "./dist/index.js",
+                        "require": "./dist/index.cjs"
+                }
+        },
+        "files": [
+                "dist"
+        ],
+        "scripts": {
+                "clean": "rm -rf dist",
+                "build": "npm run clean && npm run build:ts && npm run build:bundle",
+                "build:ts": "tsc -p tsconfig.json",
+                "build:bundle": "tsup",
+                "check": "tsc --noEmit -p tsconfig.json",
+                "test": "vitest run",
+                "coverage": "vitest run --coverage"
+        },
+        "sideEffects": false
+}

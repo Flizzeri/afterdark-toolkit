@@ -74,12 +74,17 @@ importers:
 
   packages/core:
     dependencies:
+      '@afterdarktk/shared':
+        specifier: workspace:*
+        version: link:../shared
       ts-morph:
         specifier: ^27.0.2
         version: 27.0.2
       vitest:
         specifier: ^4.0.8
         version: 4.0.8(@types/node@24.10.1)(tsx@4.20.6)(yaml@2.8.1)
+
+  packages/shared: {}
 
 packages:
 

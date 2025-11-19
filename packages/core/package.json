@@ -4,13 +4,17 @@
         "main": "dist/index.js",
         "types": "dist/index.d.ts",
         "scripts": {
-                "build": "tsup src/index.ts --dts --format esm,cjs",
+                "clean": "rm -rf dist",
+                "build": "npm run clean && npm run build:ts && npm run build:bundle",
+                "build:ts": "tsc -p tsconfig.json",
+                "build:bundle": "tsup",
                 "check": "tsc --noEmit -p tsconfig.json",
                 "test": "vitest run",
                 "coverage": "vitest run --coverage"
         },
         "type": "module",
         "dependencies": {
+                "@afterdarktk/shared": "workspace:*",
                 "ts-morph": "^27.0.2",
                 "vitest": "^4.0.8"
         }

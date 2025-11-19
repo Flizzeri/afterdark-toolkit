@@ -120,6 +120,13 @@ export default [
         prettier,
 
         {
-                ignores: ['**/dist', 'node_modules', '.afterdark/cache', '**/fixtures', '**/tmp'],
+                ignores: [
+                        '**/dist',
+                        'node_modules',
+                        '.afterdark/cache',
+                        '**/fixtures',
+                        '**/tmp',
+                        '**/tsup.config.ts',
+                ],
         },
 ];
