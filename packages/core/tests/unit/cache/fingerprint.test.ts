@@ -3,10 +3,10 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+import type { FilePath, CanonicalJson, Fingerprint } from '@afterdarktk/shared';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 import { computeFingerprint, shortFingerprint } from '../../../src/cache/fingerprint.js';
-import type { FilePath, CanonicalJson, Fingerprint } from '../../../src/shared/primitives.js';
 import { isOk } from '../../../src/shared/result.js';
 
 describe('Fingerprint', () => {

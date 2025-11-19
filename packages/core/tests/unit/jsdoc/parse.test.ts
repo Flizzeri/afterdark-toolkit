@@ -1,10 +1,10 @@
 // tests/unit/jsdoc/parse.test.ts
 
+import type { JsDocTagName, SymbolId } from '@afterdarktk/shared';
 import { describe, it, expect } from 'vitest';
 
 import { parseJsDocAnnotations, type RawSymbol } from '../../../src/jsdoc/parse.js';
 import { CORE_TAGS } from '../../../src/jsdoc/tags.js';
-import type { JsDocTagName, SymbolId } from '../../../src/shared/primitives.js';
 
 function makeRawSymbol(symbolId: string, tags: Array<[string, string]>): RawSymbol {
         return {

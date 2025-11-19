@@ -1,10 +1,10 @@
 // tests/unit/diagnostics/reporter.test.ts
 
+import type { FilePath } from '@afterdarktk/shared';
 import { describe, it, expect } from 'vitest';
 
 import { formatDiagnostics, CATEGORY_ORDER } from '../../../src/diagnostics/reporter.js';
 import type { Diagnostic } from '../../../src/shared/diagnostics.js';
-import type { FilePath } from '../../../src/shared/primitives.js';
 
 describe('Diagnostics Reporter', () => {
         describe('formatDiagnostics', () => {

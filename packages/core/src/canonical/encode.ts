@@ -1,5 +1,7 @@
 // core/canonical/encode.ts
 
+import type { CanonicalJson } from '@afterdarktk/shared';
+
 import {
         CANONICAL_UNSUPPORTED_TYPE,
         CANONICAL_UNSTABLE_NUMBER,
@@ -7,7 +9,6 @@ import {
 } from '../diagnostics/codes.js';
 import { makeDiagnostic } from '../diagnostics/factory.js';
 import type { Diagnostic } from '../shared/diagnostics.js';
-import type { CanonicalJson } from '../shared/primitives.js';
 import { ok, err, type Result } from '../shared/result.js';
 
 type JsonPrimitive = string | number | boolean | null;

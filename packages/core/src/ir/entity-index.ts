@@ -1,7 +1,8 @@
 // src/ir/entity-index.ts
 
+import type { SymbolId, EntityName } from '@afterdarktk/shared';
+
 import type { IRProgram, IREntity } from './nodes.js';
-import type { SymbolId, EntityName } from '../shared/primitives.js';
 
 export interface EntityIndex {
         readonly entityByName: ReadonlyMap<EntityName, IREntity>;

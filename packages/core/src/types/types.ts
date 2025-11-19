@@ -1,7 +1,8 @@
 // src/types/types.ts
 
+import type { SymbolId } from '@afterdarktk/shared';
+
 import type { SourceSpan } from '../shared/diagnostics.js';
-import type { SymbolId } from '../shared/primitives.js';
 
 export type PrimitiveKind = 'string' | 'number' | 'boolean' | 'bigint' | 'null' | 'undefined';
 

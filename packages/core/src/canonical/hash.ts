@@ -2,10 +2,11 @@
 
 import { createHash } from 'crypto';
 
+import type { Hash } from '@afterdarktk/shared';
+
 import { encodeCanonical, type CanonicalEncodeConfig } from '../canonical/encode.js';
 import { CANONICAL_UNSUPPORTED_TYPE } from '../diagnostics/codes.js';
 import { makeDiagnostic } from '../diagnostics/factory.js';
-import type { Hash } from '../shared/primitives';
 import { ok, err, isErr, type Result } from '../shared/result.js';
 
 /**

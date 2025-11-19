@@ -1,5 +1,7 @@
 // src/ir/lower.ts
 
+import type { SymbolId } from '@afterdarktk/shared';
+
 import type {
         IRNode,
         IRMetadata,
@@ -16,7 +18,6 @@ import type {
 } from './nodes.js';
 import type { ParsedAnnotation } from '../jsdoc/annotations.js';
 import type { SourceSpan } from '../shared/diagnostics.js';
-import type { SymbolId } from '../shared/primitives.js';
 import type { ResolvedType } from '../types/types.js';
 
 export interface LowerInput {

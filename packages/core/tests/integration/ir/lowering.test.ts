@@ -1,12 +1,12 @@
 // tests/integration/ir/lowering.test.ts
 
+import type { SymbolId, EntityName } from '@afterdarktk/shared';
 import { describe, it, expect } from 'vitest';
 
 import { buildEntityIndex } from '../../../src/ir/entity-index.js';
 import { lowerToIR } from '../../../src/ir/lower.js';
 import type { IRProgram, IREntity } from '../../../src/ir/nodes.js';
 import type { ParsedAnnotation } from '../../../src/jsdoc/annotations.js';
-import type { SymbolId, EntityName } from '../../../src/shared/primitives.js';
 import type { ResolvedType } from '../../../src/types/types.js';
 
 describe('IR Lowering Integration', () => {

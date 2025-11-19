@@ -3,13 +3,14 @@
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 
+import type { FilePath, Hash } from '@afterdarktk/shared';
+
 import { encodeCanonical } from '../canonical/encode.js';
 import { computeHash } from '../canonical/hash.js';
 import { CACHE_IO_ERROR, CACHE_CORRUPTED } from '../diagnostics/codes.js';
 import { makeDiagnostic } from '../diagnostics/factory.js';
 import { type HASH_ALGORITHM, CACHE_ROOT } from '../shared/constants.js';
 import type { Diagnostic } from '../shared/diagnostics.js';
-import type { FilePath, Hash } from '../shared/primitives.js';
 import { type Result, ok, err, isErr } from '../shared/result.js';
 
 export type CacheKind = 'ir' | 'symbols' | 'indexes';

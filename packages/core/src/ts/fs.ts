@@ -3,9 +3,10 @@
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 
+import type { FilePath } from '@afterdarktk/shared';
+
 import { CACHE_IO_ERROR } from '../diagnostics/codes.js';
 import { makeDiagnostic } from '../diagnostics/factory.js';
-import type { FilePath } from '../shared/primitives.js';
 import { ok, err, type Result } from '../shared/result.js';
 
 /**

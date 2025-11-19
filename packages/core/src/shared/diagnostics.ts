@@ -1,7 +1,8 @@
 // src/shared/diagnostics.ts
 
+import type { FilePath } from '@afterdarktk/shared';
+
 import type { DIAGNOSTIC_PREFIX } from './constants.js';
-import type { FilePath } from './primitives.js';
 
 type DiagnosticPrefix = typeof DIAGNOSTIC_PREFIX;
 

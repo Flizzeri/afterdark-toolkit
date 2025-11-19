@@ -1,8 +1,8 @@
 // tests/unit/ts/fs.test.ts
 
+import type { FilePath } from '@afterdarktk/shared';
 import { describe, it, expect } from 'vitest';
 
-import type { FilePath } from '../../../src/shared/primitives.js';
 import { normalizePath, readFile, fileExists, stat } from '../../../src/ts/fs.js';
 
 describe('fs', () => {

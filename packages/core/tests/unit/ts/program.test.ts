@@ -1,8 +1,8 @@
 // tests/unit/ts/program.test.ts
 
+import type { FilePath } from '@afterdarktk/shared';
 import { describe, it, expect } from 'vitest';
 
-import type { FilePath } from '../../../src/shared/primitives.js';
 import { normalizePath } from '../../../src/ts/fs.js';
 import { createProgram, addSourceFile, getSourceFiles } from '../../../src/ts/program.js';
 

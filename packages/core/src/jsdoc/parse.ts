@@ -1,5 +1,7 @@
 // src/jsdoc/parse.ts
 
+import type { JsDocTagName, SymbolId } from '@afterdarktk/shared';
+
 import type { ParsedAnnotation, Action } from './annotations.js';
 import { CORE_TAGS, TAG_GRAMMARS, ALL_CORE_TAG_NAMES, type CoreTagName } from './tags.js';
 import {
@@ -11,7 +13,6 @@ import {
 } from '../diagnostics/codes.js';
 import { makeDiagnostic } from '../diagnostics/factory.js';
 import type { Diagnostic } from '../shared/diagnostics.js';
-import type { JsDocTagName, SymbolId } from '../shared/primitives.js';
 
 export interface RawJsDocTag {
         readonly name: JsDocTagName;

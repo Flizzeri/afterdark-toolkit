@@ -1,10 +1,10 @@
 // tests/unit/ir/entity-index.test.ts
 
+import type { SymbolId, EntityName } from '@afterdarktk/shared';
 import { describe, it, expect } from 'vitest';
 
 import { buildEntityIndex } from '../../../src/ir/entity-index.js';
 import type { IRProgram, IREntity, IRNode } from '../../../src/ir/nodes.js';
-import type { SymbolId, EntityName } from '../../../src/shared/primitives.js';
 
 describe('Entity Index Builder', () => {
         it('should build empty index for empty program', () => {

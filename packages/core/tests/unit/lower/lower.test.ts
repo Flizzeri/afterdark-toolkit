@@ -1,11 +1,11 @@
 // tests/unit/ir/lower.test.ts
 
+import type { SymbolId } from '@afterdarktk/shared';
 import { describe, it, expect } from 'vitest';
 
 import { lowerToIR } from '../../../src/ir/lower.js';
 import type { ParsedAnnotation } from '../../../src/jsdoc/annotations.js';
 import type { SourceSpan } from '../../../src/shared/diagnostics.js';
-import type { SymbolId } from '../../../src/shared/primitives.js';
 import type { ResolvedType } from '../../../src/types/types.js';
 
 describe('IR Lowering', () => {
