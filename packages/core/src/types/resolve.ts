@@ -1,4 +1,4 @@
-// src/types/resolve.ts
+// packages/core/src/types/resolve.ts
 
 import {
         type SymbolId,

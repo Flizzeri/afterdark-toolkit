@@ -1,4 +1,4 @@
-// src/cache/fingerprint.ts
+// packages/core/src/cache/fingerprint.ts
 
 import { promises as fs2 } from 'node:fs';
 import * as path2 from 'node:path';

@@ -1,4 +1,4 @@
-// tests/unit/cache/fingerprint.test.ts
+// packages/core/tests/unit/cache/fingerprint.test.ts
 
 import fs from 'node:fs/promises';
 import path from 'node:path';

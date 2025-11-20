@@ -1,4 +1,4 @@
-// src/ir/entity-index.ts
+// packages/core/src/ir/entity-index.ts
 
 import type { SymbolId, EntityName } from '@afterdarktk/shared';
 

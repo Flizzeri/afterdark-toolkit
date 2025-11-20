@@ -1,4 +1,4 @@
-// src/cache/layout.ts
+// packages/core/src/cache/layout.ts
 
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';

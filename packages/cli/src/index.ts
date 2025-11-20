@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// packages/cli/src/index.ts
+
 import { Command } from 'commander';
 
 import { version } from '../package.json';

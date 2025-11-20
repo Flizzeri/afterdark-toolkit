@@ -1,4 +1,4 @@
-// tests/unit/jsdoc/parse.test.ts
+// packages/core/tests/unit/jsdoc/parse.test.ts
 
 import type { JsDocTagName, SymbolId } from '@afterdarktk/shared';
 import { describe, it, expect } from 'vitest';

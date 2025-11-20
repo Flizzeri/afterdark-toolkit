@@ -1,4 +1,4 @@
-// src/pipe/index.ts
+// packages/core/src/pipe/index.ts
 
 export { extractProgramIR } from './extract.js';
 export type { ExtractProgramIRInput, ExtractProgramIROutput } from './extract.js';

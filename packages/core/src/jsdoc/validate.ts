@@ -1,4 +1,4 @@
-// src/jsdoc/validate.ts
+// packages/core/src/jsdoc/validate.ts
 
 import { ok, err, type Result, type Diagnostic, makeDiagnostic } from '@afterdarktk/shared';
 

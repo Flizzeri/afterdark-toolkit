@@ -1,4 +1,4 @@
-// src/pipe/state.ts
+// packages/core/src/pipe/state.ts
 
 import type { SymbolId, Hash, Diagnostic } from '@afterdarktk/shared';
 import type { Project } from 'ts-morph';

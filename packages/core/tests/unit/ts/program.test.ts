@@ -1,4 +1,4 @@
-// tests/unit/ts/program.test.ts
+// packages/core/tests/unit/ts/program.test.ts
 
 import type { FilePath } from '@afterdarktk/shared';
 import { describe, it, expect } from 'vitest';

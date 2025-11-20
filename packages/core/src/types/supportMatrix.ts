@@ -1,4 +1,4 @@
-// src/types/supportMatrix.ts
+// packages/core/src/types/supportMatrix.ts
 
 export type SupportStatus = 'supported' | 'partial' | 'unsupported';
 

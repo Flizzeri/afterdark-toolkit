@@ -1,4 +1,5 @@
-// src/ts/symbols.ts
+// packages/core/src/ts/symbols.ts
+
 import {
         type SymbolId,
         type JsDocTagName,

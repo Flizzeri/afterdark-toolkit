@@ -1,4 +1,4 @@
-// tests/unit/canonical/encode.test.ts
+// packages/shared/tests/unit/encode.test.ts
 
 import { describe, it, expect } from 'vitest';
 

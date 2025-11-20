@@ -1,4 +1,4 @@
-// tests/unit/canonical/hash.test.ts
+// packages/shared/tests/unit/hash.test.ts
 
 import { describe, it, expect } from 'vitest';
 

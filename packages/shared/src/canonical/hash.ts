@@ -1,4 +1,4 @@
-// core/canonical/hash.ts
+// packages/shared/src/canonical/hash.ts
 
 import { createHash } from 'crypto';
 

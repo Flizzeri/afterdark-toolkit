@@ -1,4 +1,4 @@
-// src/jsdoc/tags.ts
+// packages/core/src/jsdoc/tags.ts
 
 export const CORE_TAGS = {
         // Entity & schema

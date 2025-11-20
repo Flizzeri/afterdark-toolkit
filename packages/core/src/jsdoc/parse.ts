@@ -1,4 +1,4 @@
-// src/jsdoc/parse.ts
+// packages/core/src/jsdoc/parse.ts
 
 import {
         type JsDocTagName,

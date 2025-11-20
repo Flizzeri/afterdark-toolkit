@@ -1,4 +1,4 @@
-// src/ts/program.ts
+// packages/core/src/ts/program.ts
 
 import { type FilePath, ok, err, type Result, makeDiagnostic } from '@afterdarktk/shared';
 import { Project, type CompilerOptions } from 'ts-morph';

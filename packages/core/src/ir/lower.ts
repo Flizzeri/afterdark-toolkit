@@ -1,4 +1,4 @@
-// src/ir/lower.ts
+// packages/core/src/ir/lower.ts
 
 import type { SymbolId, SourceSpan } from '@afterdarktk/shared';
 

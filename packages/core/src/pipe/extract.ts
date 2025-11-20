@@ -1,4 +1,5 @@
-// src/pipe/extract.ts
+// packages/core/src/pipe/extract.ts
+
 import {
         type SymbolId,
         type EntityName,

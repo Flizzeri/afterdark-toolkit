@@ -1,4 +1,4 @@
-// src/types/types.ts
+// packages/core/src/types/types.ts
 
 import type { SymbolId, SourceSpan } from '@afterdarktk/shared';
 

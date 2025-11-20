@@ -1,4 +1,4 @@
-// src/shared/result.ts
+// packages/shared/src/utils/types.ts
 
 import type { Diagnostic } from '../diagnostics/types';
 

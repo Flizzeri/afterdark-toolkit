@@ -1,4 +1,4 @@
-// tests/unit/types/supportMatrix.test.ts
+// packages/core/tests/unit/types/supportMatrix.test.ts
 
 import { describe, it, expect } from 'vitest';
 

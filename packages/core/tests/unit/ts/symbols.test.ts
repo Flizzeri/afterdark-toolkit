@@ -1,4 +1,4 @@
-// tests/unit/ts/symbols.test.ts
+// packages/core/tests/unit/ts/symbols.test.ts
 
 import { describe, it, expect, beforeAll } from 'vitest';
 

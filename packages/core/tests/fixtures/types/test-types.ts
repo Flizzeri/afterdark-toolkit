@@ -1,4 +1,4 @@
-// tests/fixtures/types/test-types.ts
+// packages/core/tests/fixtures/types/test-types.ts
 
 // Primitives
 export type StringType = string;

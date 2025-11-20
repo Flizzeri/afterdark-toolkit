@@ -1,4 +1,4 @@
-// tests/fixtures/e2e/simple-schema/src/entities.ts
+// packages/core/tests/fixtures/e2e/simple-schema/src/entities.ts
 
 /**
  * @entity User

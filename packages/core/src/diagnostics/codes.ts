@@ -1,4 +1,4 @@
-// src/diagnostics/codes.ts
+// packages/core/src/diagnostics/codes.ts
 
 import { DIAGNOSTIC_PREFIX, type CodeMeta } from '@afterdarktk/shared';
 

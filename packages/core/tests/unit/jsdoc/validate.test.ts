@@ -1,4 +1,4 @@
-// tests/unit/jsdoc/validate.test.ts
+// packages/core/tests/unit/jsdoc/validate.test.ts
 
 import { describe, it, expect } from 'vitest';
 

@@ -1,4 +1,4 @@
-// core/canonical/encode.ts
+// packages/shared/src/canonical/encode.ts
 
 import { ok, err } from '@afterdarktk/shared';
 

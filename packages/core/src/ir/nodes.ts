@@ -1,4 +1,4 @@
-// src/ir/nodes.ts
+// packages/core/src/ir/nodes.ts
 
 import type { SymbolId, EntityName, SourceSpan } from '@afterdarktk/shared';
 

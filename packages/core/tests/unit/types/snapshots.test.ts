@@ -1,4 +1,4 @@
-// tests/unit/types/snapshots.test.ts
+// packages/core/tests/unit/types/snapshots.test.ts
 
 import path from 'node:path';
 

@@ -1,4 +1,4 @@
-// tests/unit/ir/entity-index.test.ts
+// packages/core/tests/unit/lower/entity-index.test.ts
 
 import type { SymbolId, EntityName } from '@afterdarktk/shared';
 import { describe, it, expect } from 'vitest';

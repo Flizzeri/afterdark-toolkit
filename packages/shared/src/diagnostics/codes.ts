@@ -1,3 +1,5 @@
+// packages/shared/src/diagnostics/codes.ts
+
 import { DIAGNOSTIC_PREFIX, type CodeMeta } from '@afterdarktk/shared';
 
 const DIAGNOSTIC_PREFIX_IR = `${DIAGNOSTIC_PREFIX}-ENCODING` as const;

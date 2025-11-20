@@ -1,4 +1,4 @@
-// tests/integration/ir/lowering.test.ts
+// packages/core/tests/integration/ir/lowering.test.ts
 
 import type { SymbolId, EntityName } from '@afterdarktk/shared';
 import { describe, it, expect } from 'vitest';

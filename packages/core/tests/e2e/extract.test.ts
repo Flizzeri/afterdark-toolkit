@@ -1,4 +1,4 @@
-// tests/e2e/extract.test.ts
+// packages/core/tests/e2e/extract.test.ts
 
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';

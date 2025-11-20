@@ -1,4 +1,4 @@
-// tests/unit/types/resolve.test.ts
+// packages/core/tests/unit/types/resolve.test.ts
 
 import path from 'node:path';
 

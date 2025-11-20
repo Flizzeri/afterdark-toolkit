@@ -1,4 +1,4 @@
-// tests/unit/diagnostics/reporter.test.ts
+// packages/shared/tests/unit/reporter.test.ts
 
 import { describe, it, expect } from 'vitest';
 

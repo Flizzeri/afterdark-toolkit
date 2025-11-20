@@ -1,4 +1,4 @@
-// src/jsdoc/annotations.ts
+// packages/core/src/jsdoc/annotations.ts
 
 import type { CoreTagName } from './tags.js';
 

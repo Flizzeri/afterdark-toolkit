@@ -1,4 +1,4 @@
-// tests/unit/cache/layout.test.ts
+// packages/core/tests/unit/cache/layout.test.ts
 
 import fs from 'node:fs/promises';
 import path from 'node:path';

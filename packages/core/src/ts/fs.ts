@@ -1,4 +1,4 @@
-// src/ts/fs.ts
+// packages/core/src/ts/fs.ts
 
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';

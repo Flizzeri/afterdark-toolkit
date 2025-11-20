@@ -1,4 +1,4 @@
-// packages/sharedsrc/diagnostics/reporter.ts
+// packages/shared/src/diagnostics/reporter.ts
 
 import type { Diagnostic, DiagnosticCategory } from './types.js';
 
