@@ -1,9 +1,11 @@
 // eslint.config.js
+
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import importX from 'eslint-plugin-import-x';
 import jsdoc from 'eslint-plugin-jsdoc';
 import prettier from 'eslint-config-prettier';
+import headerPathRule from './eslint-rules/header-path-rule.js';
 
 export default [
         js.configs.recommended,
@@ -35,6 +37,11 @@ export default [
                         '@typescript-eslint': tseslint.plugin,
                         'import-x': importX,
                         jsdoc,
+                        'header-check': {
+                                rules: {
+                                        'require-header': headerPathRule,
+                                },
+                        },
                 },
                 rules: {
                         // --- TypeScript strictness ---
@@ -63,6 +70,7 @@ export default [
                                         alphabetize: { order: 'asc', caseInsensitive: true },
                                 },
                         ],
+                        'header-check/require-header': 'error',
 
                         // --- JSDoc / TSDoc ---
                         'jsdoc/check-alignment': 'error',
@@ -127,6 +135,7 @@ export default [
                         '**/fixtures',
                         '**/tmp',
                         '**/tsup.config.ts',
+                        './eslint-rules',
                 ],
         },
 ];
