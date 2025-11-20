@@ -91,38 +91,16 @@ export const TAG_DUPLICATE: CodeMeta = {
         docsSlug: 'ADTK-IR-3007',
 } as const;
 
-// 91xx: Internal / encoding
-export const CANONICAL_UNSUPPORTED_TYPE: CodeMeta = {
-        code: `${DIAGNOSTIC_PREFIX_IR}-9101`,
-        category: 'error',
-        template: 'Unsupported value type for canonical encoding: %s',
-        docsSlug: 'ADTK-CANONICAL-1001',
-} as const;
-
-export const CANONICAL_UNSTABLE_NUMBER: CodeMeta = {
-        code: `${DIAGNOSTIC_PREFIX_IR}-9102`,
-        category: 'error',
-        template: 'Non-deterministic number representation: %s',
-        docsSlug: 'ADTK-CANONICAL-1002',
-} as const;
-
-export const CANONICAL_BIGINT_POLICY: CodeMeta = {
-        code: `${DIAGNOSTIC_PREFIX_IR}-9103`,
-        category: 'error',
-        template: 'BigInt encountered but disallowed by policy',
-        docsSlug: 'ADTK-CANONICAL-1003',
-} as const;
-
-// 92xx: Internal / encoding
+// 91xx: Internal / cache
 export const CACHE_CORRUPTED: CodeMeta = {
-        code: `${DIAGNOSTIC_PREFIX_IR}-9201`,
+        code: `${DIAGNOSTIC_PREFIX_IR}-9101`,
         category: 'error',
         template: 'Cache entry is corrupted or checksum mismatch: %s',
         docsSlug: 'ADTK-CACHE-9001',
 } as const;
 
 export const CACHE_IO_ERROR: CodeMeta = {
-        code: `${DIAGNOSTIC_PREFIX_IR}-9202`,
+        code: `${DIAGNOSTIC_PREFIX_IR}-9102`,
         category: 'error',
         template: 'Cache I/O error at %s: %s',
         docsSlug: 'ADTK-CACHE-9002',

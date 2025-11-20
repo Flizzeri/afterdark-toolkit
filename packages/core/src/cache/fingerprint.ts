@@ -13,9 +13,9 @@ import {
         ok,
         err,
         makeDiagnostic,
+        computeHash,
 } from '@afterdarktk/shared';
 
-import { computeHash } from '../canonical/hash.js';
 import { CACHE_IO_ERROR } from '../diagnostics/codes.js';
 
 export interface FingerprintInput {

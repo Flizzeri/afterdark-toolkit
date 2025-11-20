@@ -14,10 +14,10 @@ import {
         isErr,
         CACHE_ROOT,
         makeDiagnostic,
+        computeHash,
+        encodeCanonical,
 } from '@afterdarktk/shared';
 
-import { encodeCanonical } from '../canonical/encode.js';
-import { computeHash } from '../canonical/hash.js';
 import { CACHE_IO_ERROR, CACHE_CORRUPTED } from '../diagnostics/codes.js';
 
 export type CacheKind = 'ir' | 'symbols' | 'indexes';

@@ -251,7 +251,7 @@ describe('Cache Layout', () => {
                         const result = await readJsonEnvelope(filePath);
                         expect(isErr(result)).toBe(true);
                         if (isErr(result)) {
-                                expect(result.diagnostics[0].code).toBe('ADTK-IR-9201');
+                                expect(result.diagnostics[0].code).toBe('ADTK-IR-9101');
                         }
                 });
 
@@ -298,7 +298,7 @@ describe('Cache Layout', () => {
                         const result = await readJsonEnvelope(filePath);
                         expect(isErr(result)).toBe(true);
                         if (isErr(result)) {
-                                expect(result.diagnostics[0].code).toBe('ADTK-IR-9202');
+                                expect(result.diagnostics[0].code).toBe('ADTK-IR-9102');
                         }
                 });
         });

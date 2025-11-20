@@ -11,6 +11,8 @@ import {
         err,
         isErr,
         type Result,
+        encodeCanonical,
+        computeHash,
 } from '@afterdarktk/shared';
 import { version as tsVersion } from 'typescript';
 
@@ -23,8 +25,6 @@ import {
         readJsonEnvelope,
         writeJsonEnvelope,
 } from '../cache/layout.js';
-import { encodeCanonical } from '../canonical/encode.js';
-import { computeHash } from '../canonical/hash.js';
 import { lowerToIR } from '../ir/lower.js';
 import type { IRProgram, IREntity, IRNode } from '../ir/nodes.js';
 import { parseJsDocAnnotations, type RawSymbol } from '../jsdoc/parse.js';
