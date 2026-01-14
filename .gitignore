@@ -10,3 +10,4 @@ coverage
 **/tmp-**
 **/tmp/
 **/.afterdarktk
+.envrc
