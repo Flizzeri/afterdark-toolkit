@@ -1,0 +1,65 @@
+{
+        "name": "afterdark-toolkit",
+        "private": true,
+        "version": "0.1.0",
+        "description": "Type-safe validation, migration, and runtime tools for TypeScript projects.",
+        "type": "module",
+        "workspaces": [
+                "packages/*"
+        ],
+        "scripts": {
+                "build": "turbo run build",
+                "dev": "turbo run dev --parallel",
+                "test": "turbo run test",
+                "test:watch": "turbo run test:watch --parallel",
+                "coverage": "turbo run coverage",
+                "check": "turbo run check",
+                "lint": "turbo run lint",
+                "lint:fix": "eslint . --ext .ts --fix && prettier --write .",
+                "format": "prettier --write .",
+                "typecheck": "turbo run check",
+                "clean": "turbo run clean && rimraf node_modules/.turbo",
+                "full-check": "pnpm run lint && pnpm run check && pnpm run test",
+                "changeset": "changeset",
+                "changeset:version": "changeset version",
+                "release": "pnpm build && changeset publish",
+                "prepare": "husky"
+        },
+        "lint-staged": {
+                "*.{ts,tsx}": [
+                        "eslint --fix",
+                        "prettier --write"
+                ],
+                "*.{json,md,yml}": [
+                        "prettier --write"
+                ]
+        },
+        "devDependencies": {
+                "@changesets/cli": "^2.29.8",
+                "@commitlint/cli": "^20.3.1",
+                "@commitlint/config-conventional": "^20.3.1",
+                "@eslint/js": "^9.39.1",
+                "@types/node": "^24.10.1",
+                "@typescript-eslint/eslint-plugin": "^8.46.4",
+                "@typescript-eslint/parser": "^8.46.4",
+                "@vitest/coverage-v8": "^4.0.8",
+                "eslint": "^9.39.1",
+                "eslint-config-prettier": "^10.1.8",
+                "eslint-plugin-import": "^2.32.0",
+                "eslint-plugin-import-x": "^4.16.1",
+                "eslint-plugin-jsdoc": "^61.2.1",
+                "husky": "^9.1.7",
+                "lint-staged": "^16.2.6",
+                "prettier": "^3.6.2",
+                "rimraf": "^6.1.0",
+                "tsx": "^4.20.6",
+                "turbo": "^2.7.4",
+                "typescript": "^5.9.3",
+                "typescript-eslint": "^8.46.4"
+        },
+        "engines": {
+                "node": ">=22",
+                "pnpm": ">=10"
+        },
+        "packageManager": "pnpm@10.28.0"
+}

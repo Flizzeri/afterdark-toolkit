@@ -1,0 +1,19 @@
+{
+        "name": "@adtk/tests",
+        "version": "0.1.0",
+        "private": true,
+        "description": "End-to-end tests for Afterdark Toolkit",
+        "type": "module",
+        "scripts": {
+                "test": "vitest run",
+                "test:watch": "vitest",
+                "clean": "rimraf fixtures/*/node_modules fixtures/*/.adtk"
+        },
+        "dependencies": {
+                "@adtk/cli": "workspace:*",
+                "@adtk/compiler": "workspace:*"
+        },
+        "devDependencies": {
+                "execa": "^8.0.1"
+        }
+}

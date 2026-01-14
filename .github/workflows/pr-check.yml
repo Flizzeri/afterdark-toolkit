@@ -1,0 +1,23 @@
+name: PR Check
+
+on:
+        pull_request:
+                types: [opened, synchronize, reopened]
+
+jobs:
+        changeset:
+                name: Check for Changeset
+                runs-on: ubuntu-latest
+
+                steps:
+                        - uses: actions/checkout@v4
+                          with:
+                                  fetch-depth: 0
+
+                        - name: Check for changeset
+                          run: |
+                                  if [ -z "$(ls .changeset/*.md 2>/dev/null | grep -v README)" ]; then
+                                    echo "::error::No changeset found. Please run 'pnpm changeset' and commit the result."
+                                    exit 1
+                                  fi
+                                  echo "✓ Changeset found"

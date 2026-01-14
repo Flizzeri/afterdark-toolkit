@@ -1,0 +1,32 @@
+version: 2
+updates:
+        # npm dependencies
+        - package-ecosystem: npm
+          directory: /
+          schedule:
+                  interval: weekly
+          open-pull-requests-limit: 5
+          groups:
+                  dev-dependencies:
+                          patterns:
+                                  - '@types/*'
+                                  - 'eslint*'
+                                  - 'prettier'
+                                  - '@typescript-eslint/*'
+                          update-types:
+                                  - minor
+                                  - patch
+
+        # Rust dependencies
+        - package-ecosystem: cargo
+          directory: /packages/cache
+          schedule:
+                  interval: weekly
+          open-pull-requests-limit: 3
+
+        # GitHub Actions
+        - package-ecosystem: github-actions
+          directory: /
+          schedule:
+                  interval: weekly
+          open-pull-requests-limit: 3

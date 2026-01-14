@@ -1,0 +1,46 @@
+name: Release
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+        release:
+                name: Release
+                runs-on: ubuntu-latest
+
+                steps:
+                        - uses: actions/checkout@v4
+                          with:
+                                  fetch-depth: 0
+
+                        - uses: pnpm/action-setup@v2
+                          with:
+                                  version: 10
+
+                        - uses: actions/setup-node@v4
+                          with:
+                                  node-version: 22
+                                  cache: 'pnpm'
+
+                        - uses: dtolnay/rust-toolchain@stable
+
+                        - uses: Swatinem/rust-cache@v2
+                          with:
+                                  workspaces: packages/cache
+
+                        - name: Install dependencies
+                          run: pnpm install --frozen-lockfile
+
+                        - name: Build
+                          run: pnpm run build
+
+                        - name: Create Release PR or Publish
+                          id: changesets
+                          uses: changesets/action@v1
+                          with:
+                                  version: pnpm run changeset:version
+                                  publish: pnpm run release
+                                  commit: 'chore: release packages'
+                                  title: 'chore: release packages'
+                          env:
+                                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

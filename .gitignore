@@ -1,0 +1,12 @@
+**/node_modules
+**/dist
+*.log
+.env
+.vscode
+.idea
+coverage
+**/tsconfig.tsbuildinfo
+**/.DS_Store
+**/tmp-**
+**/tmp/
+**/.afterdarktk

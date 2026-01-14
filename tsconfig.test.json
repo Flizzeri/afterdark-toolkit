@@ -1,0 +1,7 @@
+{
+        "extends": "./tsconfig.base.json",
+        "include": ["**/tests/**/*.ts", "**/tests/**/*.tsx", "src/**/*.ts"],
+        "compilerOptions": {
+                "types": ["vitest/globals"] // or jest, mocha, etc.
+        }
+}
