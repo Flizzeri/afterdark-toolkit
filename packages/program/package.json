@@ -29,7 +29,19 @@
                 "@adtk/shared": "workspace:*",
                 "typescript": "^5.9.3"
         },
-        "devDependencies": {},
+        "devDependencies": {
+                "vitest": "catalog:",
+                "@vitest/coverage-v8": "catalog:",
+                "rimraf": "catalog:",
+                "@eslint/js": "catalog:",
+                "@typescript-eslint/eslint-plugin": "catalog:",
+                "@typescript-eslint/parser": "catalog:",
+                "eslint": "catalog:",
+                "eslint-config-prettier": "catalog:",
+                "eslint-plugin-import": "catalog:",
+                "eslint-plugin-import-x": "catalog:",
+                "eslint-plugin-jsdoc": "catalog:"
+        },
         "publishConfig": {
                 "access": "public"
         }

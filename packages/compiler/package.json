@@ -31,7 +31,20 @@
                 "@adtk/core": "workspace:*",
                 "@adtk/cache": "workspace:*"
         },
-        "devDependencies": {},
+        "devDependencies": {
+                "typescript": "catalog:",
+                "vitest": "catalog:",
+                "@vitest/coverage-v8": "catalog:",
+                "rimraf": "catalog:",
+                "@eslint/js": "catalog:",
+                "@typescript-eslint/eslint-plugin": "catalog:",
+                "@typescript-eslint/parser": "catalog:",
+                "eslint": "catalog:",
+                "eslint-config-prettier": "catalog:",
+                "eslint-plugin-import": "catalog:",
+                "eslint-plugin-import-x": "catalog:",
+                "eslint-plugin-jsdoc": "catalog:"
+        },
         "publishConfig": {
                 "access": "public"
         }
