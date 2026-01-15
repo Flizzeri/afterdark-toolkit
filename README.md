@@ -23,14 +23,14 @@ npm install -D @adtk/cli @adtk/plugin-validator
 ```ts
 // TypeScript types
 interface User {
-  email: string;
-  age: number;
+        email: string;
+        age: number;
 }
 
 // Zod schema (duplication)
 const UserSchema = z.object({
-  email: z.string().email(),
-  age: z.number().min(18),
+        email: z.string().email(),
+        age: z.number().min(18),
 });
 
 // Database migration (more duplication)
@@ -42,11 +42,11 @@ const UserSchema = z.object({
 ```ts
 /** @entity */
 interface User {
-  id: number;
-  /** @email */
-  email: string;
-  /** @min(18) */
-  age: number;
+        id: number;
+        /** @email */
+        email: string;
+        /** @min(18) */
+        age: number;
 }
 
 // That's it. Validators, schemas, and migrations are generated.

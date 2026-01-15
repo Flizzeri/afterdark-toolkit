@@ -11,3 +11,4 @@ coverage
 **/tmp/
 **/.afterdarktk
 .envrc
+*.node
