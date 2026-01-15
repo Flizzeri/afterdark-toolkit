@@ -61,13 +61,6 @@ jobs:
                         - name: Test
                           run: pnpm run test
 
-                        - name: Upload coverage
-                          uses: codecov/codecov-action@v4
-                          if: always()
-                          with:
-                                  files: ./packages/*/coverage/coverage-final.json
-                                  fail_ci_if_error: false
-
         build-rust:
                 name: Build Rust (Cache)
                 runs-on: ${{ matrix.os }}
