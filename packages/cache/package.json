@@ -32,9 +32,7 @@
                 "@adtk/shared": "workspace:*"
         },
         "devDependencies": {
-                "@napi-rs/cli": "^3.0.0",
-                "typescript": "workspace:*",
-                "vitest": "workspace:*"
+                "@napi-rs/cli": "^3.0.0"
         },
         "napi": {
                 "binaryName": "adtk-cache",
