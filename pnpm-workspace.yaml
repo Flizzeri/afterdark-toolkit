@@ -41,7 +41,7 @@ catalog:
         rimraf: ^6.1.0
 
         # Types
-        '@types/node': ^24.10.1
+        '@types/node': ^25.0.8
 
         # Rust/NAPI
         '@napi-rs/cli': ^3.0.0
