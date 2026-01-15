@@ -12,3 +12,4 @@ coverage
 **/.afterdarktk
 .envrc
 *.node
+*.d.ts
