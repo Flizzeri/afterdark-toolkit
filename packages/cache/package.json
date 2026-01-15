@@ -17,32 +17,35 @@
                 "README.md"
         ],
         "scripts": {
-                "build": "napi build --platform --release",
-                "build:debug": "napi build --platform",
-                "dev": "napi build --platform --watch",
+                "build": "npm run build:rust && npm run build:ts",
+                "build:rust": "napi build --platform --release --manifest-path native/Cargo.toml",
+                "build:ts": "tsc",
+                "dev": "napi build --platform --watch --manifest-path native/Cargo.toml",
                 "test": "vitest run",
                 "test:watch": "vitest",
                 "coverage": "vitest run --coverage",
                 "check": "tsc --noEmit",
-                "clean": "rimraf dist *.node",
+                "clean": "rimraf dist *.node native/target",
                 "lint": "eslint src --ext .ts"
         },
         "dependencies": {
                 "@adtk/shared": "workspace:*"
         },
         "devDependencies": {
-                "@napi-rs/cli": "^3.0.0"
+                "@napi-rs/cli": "^3.0.0",
+                "typescript": "workspace:*",
+                "vitest": "workspace:*"
         },
         "napi": {
-                "name": "adtk-cache",
-                "triples": {
-                        "defaults": true,
-                        "additional": [
-                                "x86_64-unknown-linux-musl",
-                                "aarch64-unknown-linux-gnu",
-                                "aarch64-apple-darwin"
-                        ]
-                }
+                "binaryName": "adtk-cache",
+                "targets": [
+                        "x86_64-unknown-linux-gnu",
+                        "x86_64-unknown-linux-musl",
+                        "x86_64-pc-windows-msvc",
+                        "x86_64-apple-darwin",
+                        "aarch64-unknown-linux-gnu",
+                        "aarch64-apple-darwin"
+                ]
         },
         "publishConfig": {
                 "access": "public"
