@@ -2,6 +2,7 @@
 
 import * as path from 'node:path';
 
+import { ok, err, type Result } from '../result';
 import type {
         FilePath,
         SemVer,
@@ -12,40 +13,33 @@ import type {
         JsDocTagName,
 } from './types.js';
 
-export function filePath(pathStr: string): FilePath {
+export function filePath(pathStr: string): Result<FilePath, string> {
         if (!pathStr || pathStr.trim().length === 0) {
-                throw new Error('File path cannot be empty');
+                return err('File path cannot be empty');
         }
 
-        // Resolve to absolute path
         const absolutePath = path.resolve(pathStr);
-
-        // Normalize to forward slashes (cross-platform consistency)
         const normalized = absolutePath.split(path.sep).join('/');
 
-        return normalized as FilePath;
+        return ok(normalized as FilePath);
 }
 
-export function semVer(version: string): SemVer {
+export function semVer(version: string): Result<SemVer, string> {
         if (!version || version.trim().length === 0) {
-                throw new Error('Version cannot be empty');
+                return err('Version cannot be empty');
         }
 
         const trimmed = version.trim();
-
-        // Regex for semantic versioning (strict)
-        // Matches: MAJOR.MINOR.PATCH[-PRERELEASE][+BUILD]
         const semverRegex =
                 /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
 
         if (!semverRegex.test(trimmed)) {
-                throw new Error(
-                        `Invalid semantic version: "${version}". ` +
-                                'Expected format: MAJOR.MINOR.PATCH[-PRERELEASE][+BUILD]',
+                return err(
+                        `Invalid semantic version: "${version}". Expected format: MAJOR.MINOR.PATCH[-PRERELEASE][+BUILD]`,
                 );
         }
 
-        return trimmed as SemVer;
+        return ok(trimmed as SemVer);
 }
 
 export function entityName(name: string): EntityName {
