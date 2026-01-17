@@ -44,11 +44,17 @@ export default [
                         },
                 },
                 rules: {
+                        'no-unused-vars': 'off',
                         // --- TypeScript strictness ---
                         '@typescript-eslint/explicit-function-return-type': 'error',
                         '@typescript-eslint/no-explicit-any': 'error',
                         '@typescript-eslint/consistent-type-imports': 'error',
-                        '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+                        '@typescript-eslint/no-unused-vars': [
+                                'error',
+                                {
+                                        argsIgnorePattern: '^_',
+                                },
+                        ],
                         '@typescript-eslint/array-type': ['error', { default: 'array-simple' }],
                         '@typescript-eslint/explicit-member-accessibility': [
                                 'error',
