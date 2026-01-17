@@ -36,6 +36,34 @@ class NodeHasher implements Hasher {
         }
 }
 
+/**
+ * Creates a hasher with the specified algorithm configuration.
+ *
+ * @remarks
+ * The hasher provides a consistent interface for cryptographic hashing
+ * regardless of the underlying algorithm. All hashers return branded `Hash`
+ * types and use `Result` for error handling.
+ *
+ * **Supported algorithms:**
+ * - `'sha256'` - SHA-256 (default, recommended for most use cases)
+ * - `'sha512'` - SHA-512 (more secure but larger output)
+ * - `'blake3'` - **Not yet implemented** (will be added in future release)
+ *
+ * SHA-256 provides a good balance of performance and collision resistance
+ * for content-addressable caching.
+ *
+ * @example
+ * ```typescript
+ * const hasher = createHasher({ algorithm: 'sha256' });
+ *
+ * const result1 = hasher.hash('hello');
+ * const result2 = hasher.hash(new Uint8Array([104, 101, 108, 108, 111]));
+ *
+ * if (result1.ok && result2.ok) {
+ *   console.log(result1.value === result2.value); // true
+ * }
+ * ```
+ */
 export function createHasher(config: Partial<HasherConfig> = {}): Hasher {
         const cfg: HasherConfig = { ...DEFAULT_HASHER_CONFIG, ...config };
         return new NodeHasher(cfg);
@@ -61,6 +89,17 @@ export function hashCanonicalJson(
         return hashString(json, config);
 }
 
+/**
+ * Hashes an arbitrary (structured) value using canonical encoding.
+ *
+ * @remarks
+ * This is the recommended way to hash structured data (objects, arrays, IR nodes).
+ * It combines canonical encoding with cryptographic hashing to produce a stable
+ * content hash.
+ *
+ * If encoding fails (e.g., circular reference, unsupported type), an error
+ * is returned with a descriptive message.
+ */
 export function hashValue(
         value: unknown,
         options: {
