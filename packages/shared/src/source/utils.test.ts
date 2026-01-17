@@ -86,6 +86,13 @@ describe('source/utils', () => {
 
                         expect(spanContains(span, position)).toBe(false);
                 });
+
+                it('returns false when b ends before a starts on the same line', () => {
+                        const a = createSpan(file, pos(5, 20, 60), pos(5, 30, 70));
+                        const b = createSpan(file, pos(5, 5, 45), pos(5, 10, 50));
+
+                        expect(spanOverlaps(a, b)).toBe(false);
+                });
         });
 
         describe('spanOverlaps', () => {
