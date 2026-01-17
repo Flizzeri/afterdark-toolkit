@@ -18,6 +18,103 @@ import {
         serializeCanonical,
 } from './utils.js';
 
+/**
+ * Encodes a value as canonical JSON with deterministic serialization.
+ *
+ * Canonical encoding ensures that semantically equal values always produce
+ * identical JSON strings, regardless of property order or internal representation.
+ * This is critical for content-addressable caching where the hash of encoded
+ * output must be stable.
+ *
+ * @remarks
+ * The encoder sorts all object keys alphabetically and normalizes special values
+ * according to the provided configuration policies. Circular references are detected
+ * and return an error rather than causing infinite recursion.
+ *
+ * Key features:
+ * - Deterministic key ordering (alphabetical)
+ * - Configurable handling of special types (BigInt, Date, Map, Set, binary data)
+ * - Circular reference detection
+ * - Detailed error paths for debugging
+ *
+ * @example
+ * Basic usage with objects:
+ * ```typescript
+ * const obj1 = { z: 3, a: 1, m: 2 };
+ * const obj2 = { a: 1, m: 2, z: 3 };
+ *
+ * const result1 = encodeCanonical(obj1);
+ * const result2 = encodeCanonical(obj2);
+ *
+ * if (result1.ok && result2.ok) {
+ *   console.log(result1.value === result2.value); // true
+ *   // Both produce: '{"a":1,"m":2,"z":3}'
+ * }
+ * ```
+ *
+ * @example
+ * Handling special values with policies:
+ * ```typescript
+ * // Default: NaN/Infinity cause errors
+ * const result = encodeCanonical(NaN);
+ * if (!result.ok) {
+ *   console.log(result.error.reason); // 'non-finite-number'
+ * }
+ *
+ * // Alternative: encode as strings
+ * const result2 = encodeCanonical(NaN, {
+ *   specialNumberPolicy: 'string'
+ * });
+ * if (result2.ok) {
+ *   console.log(result2.value); // '"NaN"'
+ * }
+ * ```
+ *
+ * @example
+ * Working with complex types:
+ * ```typescript
+ * const data = {
+ *   timestamp: new Date('2024-01-15T12:00:00Z'),
+ *   values: new Set([3, 1, 2]),
+ *   metadata: new Map([['version', '1.0.0']]),
+ *   buffer: new Uint8Array([1, 2, 3])
+ * };
+ *
+ * const result = encodeCanonical(data, {
+ *   datePolicy: 'iso',
+ *   setPolicy: 'array-sorted',
+ *   mapPolicy: 'entries',
+ *   binaryPolicy: 'base64'
+ * });
+ *
+ * if (result.ok) {
+ *   console.log(result.value);
+ *   // Deterministic output with sorted collections
+ * }
+ * ```
+ *
+ * @example
+ * Error handling with detailed paths:
+ * ```typescript
+ * const obj = {
+ *   user: {
+ *     profile: {
+ *       age: NaN  // Invalid
+ *     }
+ *   }
+ * };
+ *
+ * const result = encodeCanonical(obj);
+ * if (!result.ok) {
+ *   console.log(result.error.path);     // '$.user.profile.age'
+ *   console.log(result.error.reason);   // 'non-finite-number'
+ *   console.log(result.error.message);  // Descriptive error
+ * }
+ * ```
+ *
+ * @see {@link CanonicalEncodeConfig} for all configuration options
+ * @see {@link DEFAULT_CANONICAL_CONFIG} for default policy settings
+ */
 export function encodeCanonical(
         value: unknown,
         config: Partial<CanonicalEncodeConfig> = {},
