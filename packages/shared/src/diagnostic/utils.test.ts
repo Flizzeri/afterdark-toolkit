@@ -26,19 +26,20 @@ describe('diagnostic utils', () => {
                                         title: 'Test error',
                                         description: 'Description',
                                 },
-                                {
-                                        span: testSpan,
-                                        message: 'Span message',
-                                },
+                                [
+                                        {
+                                                span: testSpan,
+                                                message: 'Span message',
+                                        },
+                                ],
                         );
 
                         expect(diagnostic.code).toBe('ADTK-TEST-001');
                         expect(diagnostic.category).toBe('error');
                         expect(diagnostic.message.title).toBe('Test error');
                         expect(diagnostic.message.description).toBe('Description');
-                        expect(diagnostic.span.span).toBe(testSpan);
-                        expect(diagnostic.span.message).toBe('Span message');
-                        expect(diagnostic.relatedSpans).toBeUndefined();
+                        expect(diagnostic.spans[0].span).toBe(testSpan);
+                        expect(diagnostic.spans[0].message).toBe('Span message');
                 });
 
                 it('creates diagnostic with optional notes', () => {
@@ -50,10 +51,12 @@ describe('diagnostic utils', () => {
                                         description: 'Desc',
                                         notes: ['Note 1', 'Note 2'],
                                 },
-                                {
-                                        span: testSpan,
-                                        message: 'Msg',
-                                },
+                                [
+                                        {
+                                                span: testSpan,
+                                                message: 'Msg',
+                                        },
+                                ],
                         );
 
                         expect(diagnostic.message.notes).toEqual(['Note 1', 'Note 2']);
@@ -68,10 +71,12 @@ describe('diagnostic utils', () => {
                                         description: 'Desc',
                                         codeExample: 'const x = 42;',
                                 },
-                                {
-                                        span: testSpan,
-                                        message: 'Msg',
-                                },
+                                [
+                                        {
+                                                span: testSpan,
+                                                message: 'Msg',
+                                        },
+                                ],
                         );
 
                         expect(diagnostic.message.codeExample).toBe('const x = 42;');
@@ -85,16 +90,18 @@ describe('diagnostic utils', () => {
                                         title: 'Test',
                                         description: 'Desc',
                                 },
-                                {
-                                        span: testSpan,
-                                        message: 'Msg',
-                                        issue: 'The issue',
-                                        help: 'The help',
-                                },
+                                [
+                                        {
+                                                span: testSpan,
+                                                message: 'Msg',
+                                                issue: 'The issue',
+                                                help: 'The help',
+                                        },
+                                ],
                         );
 
-                        expect(diagnostic.span.issue).toBe('The issue');
-                        expect(diagnostic.span.help).toBe('The help');
+                        expect(diagnostic.spans[0].issue).toBe('The issue');
+                        expect(diagnostic.spans[0].help).toBe('The help');
                 });
 
                 it('creates diagnostic with related spans', () => {
@@ -111,11 +118,11 @@ describe('diagnostic utils', () => {
                                         title: 'Test',
                                         description: 'Desc',
                                 },
-                                {
-                                        span: testSpan,
-                                        message: 'Msg',
-                                },
                                 [
+                                        {
+                                                span: testSpan,
+                                                message: 'Msg',
+                                        },
                                         {
                                                 span: otherSpan,
                                                 message: 'Related location',
@@ -123,9 +130,9 @@ describe('diagnostic utils', () => {
                                 ],
                         );
 
-                        expect(diagnostic.relatedSpans).toHaveLength(1);
-                        expect(diagnostic.relatedSpans![0].span).toBe(otherSpan);
-                        expect(diagnostic.relatedSpans![0].message).toBe('Related location');
+                        expect(diagnostic.spans).toHaveLength(2);
+                        expect(diagnostic.spans![1].span).toBe(otherSpan);
+                        expect(diagnostic.spans![1].message).toBe('Related location');
                 });
 
                 it('creates fatal diagnostic', () => {
