@@ -27,7 +27,12 @@ describe('DiagnosticCollector', () => {
                 it('adds simple error', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addError('ADTK-TEST-001', 'Test error', testSpan);
+                        collector.addError('ADTK-TEST-001', 'Test error', [
+                                {
+                                        span: testSpan,
+                                        message: 'Test error',
+                                },
+                        ]);
 
                         expect(collector.hasErrors()).toBe(true);
                         expect(collector.count()).toBe(1);
@@ -38,16 +43,21 @@ describe('DiagnosticCollector', () => {
                         expect(error.category).toBe('error');
                         expect(error.message.title).toBe('Test error');
                         expect(error.message.description).toBe('Test error');
-                        expect(error.span.span).toBe(testSpan);
-                        expect(error.span.message).toBe('Test error');
+                        expect(error.spans[0].span).toBe(testSpan);
+                        expect(error.spans[0].message).toBe('Test error');
                 });
 
                 it('adds error with custom description', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addError('ADTK-TEST-001', 'Short title', testSpan, {
-                                description: 'Longer detailed description',
-                        });
+                        collector.addError(
+                                'ADTK-TEST-001',
+                                'Short title',
+                                [{ span: testSpan, message: 'Short message' }],
+                                {
+                                        description: 'Longer detailed description',
+                                },
+                        );
 
                         const error = collector.getErrors()[0];
                         expect(error.message.title).toBe('Short title');
@@ -57,9 +67,14 @@ describe('DiagnosticCollector', () => {
                 it('adds error with notes', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addError('ADTK-TEST-001', 'Error', testSpan, {
-                                notes: ['Note 1', 'Note 2', 'Note 3'],
-                        });
+                        collector.addError(
+                                'ADTK-TEST-001',
+                                'Error',
+                                [{ span: testSpan, message: 'Error' }],
+                                {
+                                        notes: ['Note 1', 'Note 2', 'Note 3'],
+                                },
+                        );
 
                         const error = collector.getErrors()[0];
                         expect(error.message.notes).toEqual(['Note 1', 'Note 2', 'Note 3']);
@@ -68,9 +83,14 @@ describe('DiagnosticCollector', () => {
                 it('adds error with code example', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addError('ADTK-TEST-001', 'Error', testSpan, {
-                                codeExample: 'const x = 42;',
-                        });
+                        collector.addError(
+                                'ADTK-TEST-001',
+                                'Error',
+                                [{ span: testSpan, message: 'Error' }],
+                                {
+                                        codeExample: 'const x = 42;',
+                                },
+                        );
 
                         const error = collector.getErrors()[0];
                         expect(error.message.codeExample).toBe('const x = 42;');
@@ -79,80 +99,86 @@ describe('DiagnosticCollector', () => {
                 it('adds error with custom span message', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addError('ADTK-TEST-001', 'Error title', testSpan, {
-                                message: 'Custom span message',
-                        });
+                        collector.addError('ADTK-TEST-001', 'Error title', [
+                                { span: testSpan, message: 'Custom span message' },
+                        ]);
 
                         const error = collector.getErrors()[0];
-                        expect(error.span.message).toBe('Custom span message');
+                        expect(error.spans[0].message).toBe('Custom span message');
                 });
 
                 it('adds error with issue', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addError('ADTK-TEST-001', 'Error', testSpan, {
-                                issue: 'This is the issue',
-                        });
+                        collector.addError('ADTK-TEST-001', 'Error', [
+                                { span: testSpan, message: 'Error', issue: 'This is the issue' },
+                        ]);
 
                         const error = collector.getErrors()[0];
-                        expect(error.span.issue).toBe('This is the issue');
+                        expect(error.spans[0].issue).toBe('This is the issue');
                 });
 
                 it('adds error with help', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addError('ADTK-TEST-001', 'Error', testSpan, {
-                                help: 'Try this fix',
-                        });
+                        collector.addError('ADTK-TEST-001', 'Error', [
+                                { span: testSpan, message: 'Error', help: 'Try this fix' },
+                        ]);
 
                         const error = collector.getErrors()[0];
-                        expect(error.span.help).toBe('Try this fix');
+                        expect(error.spans[0].help).toBe('Try this fix');
                 });
 
                 it('adds error with related spans', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addError('ADTK-TEST-001', 'Error', testSpan, {
-                                relatedSpans: [
-                                        {
-                                                span: otherSpan,
-                                                message: 'Related location',
-                                        },
-                                ],
-                        });
+                        collector.addError('ADTK-TEST-001', 'Error', [
+                                { span: testSpan, message: 'Error' },
+                                {
+                                        span: otherSpan,
+                                        message: 'Related location',
+                                },
+                        ]);
 
                         const error = collector.getErrors()[0];
-                        expect(error.relatedSpans).toHaveLength(1);
-                        expect(error.relatedSpans![0].span).toBe(otherSpan);
-                        expect(error.relatedSpans![0].message).toBe('Related location');
+                        expect(error.spans).toHaveLength(2);
+                        expect(error.spans![1].span).toBe(otherSpan);
+                        expect(error.spans![1].message).toBe('Related location');
                 });
 
                 it('adds error with all options', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addError('ADTK-TEST-001', 'Complex error', testSpan, {
-                                description: 'Detailed description',
-                                notes: ['Note 1', 'Note 2'],
-                                codeExample: 'example code',
-                                message: 'span message',
-                                issue: 'issue here',
-                                help: 'help text',
-                                relatedSpans: [
+                        collector.addError(
+                                'ADTK-TEST-001',
+                                'Complex error',
+                                [
+                                        {
+                                                span: testSpan,
+                                                message: 'span message',
+                                                issue: 'issue here',
+                                                help: 'help text',
+                                        },
                                         {
                                                 span: otherSpan,
                                                 message: 'related',
                                         },
                                 ],
-                        });
+                                {
+                                        description: 'Detailed description',
+                                        notes: ['Note 1', 'Note 2'],
+                                        codeExample: 'example code',
+                                },
+                        );
 
                         const error = collector.getErrors()[0];
                         expect(error.message.description).toBe('Detailed description');
                         expect(error.message.notes).toEqual(['Note 1', 'Note 2']);
                         expect(error.message.codeExample).toBe('example code');
-                        expect(error.span.message).toBe('span message');
-                        expect(error.span.issue).toBe('issue here');
-                        expect(error.span.help).toBe('help text');
-                        expect(error.relatedSpans).toHaveLength(1);
+                        expect(error.spans[0].message).toBe('span message');
+                        expect(error.spans[0].issue).toBe('issue here');
+                        expect(error.spans[0].help).toBe('help text');
+                        expect(error.spans).toHaveLength(2);
                 });
         });
 
@@ -160,7 +186,7 @@ describe('DiagnosticCollector', () => {
                 it('adds simple warning', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addWarning('ADTK-TEST-002', 'Test warning', testSpan);
+                        collector.addWarning('ADTK-TEST-002', 'Test warning', []);
 
                         expect(collector.hasWarnings()).toBe(true);
                         expect(collector.hasErrors()).toBe(false);
@@ -173,19 +199,21 @@ describe('DiagnosticCollector', () => {
                 it('adds warning with all options', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addWarning('ADTK-TEST-002', 'Warning', testSpan, {
-                                description: 'Description',
-                                notes: ['Note'],
-                                codeExample: 'code',
-                                message: 'msg',
-                                issue: 'iss',
-                                help: 'hlp',
-                        });
+                        collector.addWarning(
+                                'ADTK-TEST-002',
+                                'Warning',
+                                [{ span: testSpan, message: 'msg', issue: 'iss', help: 'hlp' }],
+                                {
+                                        description: 'Description',
+                                        notes: ['Note'],
+                                        codeExample: 'code',
+                                },
+                        );
 
                         const warning = collector.getWarnings()[0];
                         expect(warning.message.description).toBe('Description');
                         expect(warning.message.notes).toEqual(['Note']);
-                        expect(warning.span.message).toBe('msg');
+                        expect(warning.spans[0].message).toBe('msg');
                 });
         });
 
@@ -193,7 +221,9 @@ describe('DiagnosticCollector', () => {
                 it('adds simple info', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addInfo('ADTK-TEST-003', 'Test info', testSpan);
+                        collector.addInfo('ADTK-TEST-003', 'Test info', [
+                                { span: testSpan, message: 'Info' },
+                        ]);
 
                         expect(collector.count()).toBe(1);
                         expect(collector.getInfos()).toHaveLength(1);
@@ -206,18 +236,24 @@ describe('DiagnosticCollector', () => {
                 it('adds info with options', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addInfo('ADTK-TEST-003', 'Info', testSpan, {
-                                description: 'Description',
-                                notes: ['Note 1'],
-                                message: 'Custom message',
-                                relatedSpans: [{ span: otherSpan, message: 'rel' }],
-                        });
+                        collector.addInfo(
+                                'ADTK-TEST-003',
+                                'Info',
+                                [
+                                        { span: testSpan, message: 'Custom message' },
+                                        { span: otherSpan, message: 'rel' },
+                                ],
+                                {
+                                        description: 'Description',
+                                        notes: ['Note 1'],
+                                },
+                        );
 
                         const info = collector.getInfos()[0];
                         expect(info.message.description).toBe('Description');
                         expect(info.message.notes).toEqual(['Note 1']);
-                        expect(info.span.message).toBe('Custom message');
-                        expect(info.relatedSpans).toHaveLength(1);
+                        expect(info.spans[0].message).toBe('Custom message');
+                        expect(info.spans).toHaveLength(2);
                 });
         });
 
@@ -225,7 +261,7 @@ describe('DiagnosticCollector', () => {
                 it('adds simple hint', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addHint('ADTK-TEST-004', 'Test hint', testSpan);
+                        collector.addHint('ADTK-TEST-004', 'Test hint');
 
                         expect(collector.count()).toBe(1);
                         expect(collector.getHints()).toHaveLength(1);
@@ -238,16 +274,19 @@ describe('DiagnosticCollector', () => {
                 it('adds hint with options', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addHint('ADTK-TEST-004', 'Hint', testSpan, {
-                                description: 'Description',
-                                help: 'Help text',
-                                message: 'Msg',
-                        });
+                        collector.addHint(
+                                'ADTK-TEST-004',
+                                'Hint',
+                                { span: testSpan, message: 'Msg', help: 'Help text' },
+                                {
+                                        description: 'Description',
+                                },
+                        );
 
                         const hint = collector.getHints()[0];
                         expect(hint.message.description).toBe('Description');
-                        expect(hint.span.help).toBe('Help text');
-                        expect(hint.span.message).toBe('Msg');
+                        expect(hint.spans[0].help).toBe('Help text');
+                        expect(hint.spans[0].message).toBe('Msg');
                 });
         });
 
@@ -262,10 +301,12 @@ describe('DiagnosticCollector', () => {
                                         title: 'Direct error',
                                         description: 'desc',
                                 },
-                                span: {
-                                        span: testSpan,
-                                        message: 'msg',
-                                },
+                                spans: [
+                                        {
+                                                span: testSpan,
+                                                message: 'msg',
+                                        },
+                                ],
                         });
 
                         expect(collector.count()).toBe(1);
@@ -283,10 +324,12 @@ describe('DiagnosticCollector', () => {
                                                 title: 'Fatal error',
                                                 description: 'Cannot continue',
                                         },
-                                        span: {
-                                                span: testSpan,
-                                                message: 'fatal here',
-                                        },
+                                        spans: [
+                                                {
+                                                        span: testSpan,
+                                                        message: 'fatal here',
+                                                },
+                                        ],
                                 });
                         }).toThrow(FatalDiagnostic);
 
@@ -304,10 +347,12 @@ describe('DiagnosticCollector', () => {
                                                 title: 'Fatal',
                                                 description: 'desc',
                                         },
-                                        span: {
-                                                span: testSpan,
-                                                message: 'msg',
-                                        },
+                                        spans: [
+                                                {
+                                                        span: testSpan,
+                                                        message: 'msg',
+                                                },
+                                        ],
                                 });
                         } catch (error) {
                                 expect(error).toBeInstanceOf(FatalDiagnostic);
@@ -324,9 +369,16 @@ describe('DiagnosticCollector', () => {
                 it('hasErrors returns false when no errors', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addWarning('ADTK-TEST-001', 'Warning', testSpan);
-                        collector.addInfo('ADTK-TEST-002', 'Info', testSpan);
-                        collector.addHint('ADTK-TEST-003', 'Hint', testSpan);
+                        collector.addWarning('ADTK-TEST-001', 'Warning', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addInfo('ADTK-TEST-002', 'Info', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addHint('ADTK-TEST-003', 'Hint', {
+                                span: testSpan,
+                                message: 'Message',
+                        });
 
                         expect(collector.hasErrors()).toBe(false);
                 });
@@ -334,8 +386,12 @@ describe('DiagnosticCollector', () => {
                 it('hasErrors returns true when errors exist', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addWarning('ADTK-TEST-001', 'Warning', testSpan);
-                        collector.addError('ADTK-TEST-002', 'Error', testSpan);
+                        collector.addWarning('ADTK-TEST-001', 'Warning', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addError('ADTK-TEST-002', 'Error', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
 
                         expect(collector.hasErrors()).toBe(true);
                 });
@@ -343,7 +399,9 @@ describe('DiagnosticCollector', () => {
                 it('hasWarnings returns false when no warnings', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addError('ADTK-TEST-001', 'Error', testSpan);
+                        collector.addError('ADTK-TEST-001', 'Error', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
 
                         expect(collector.hasWarnings()).toBe(false);
                 });
@@ -351,7 +409,9 @@ describe('DiagnosticCollector', () => {
                 it('hasWarnings returns true when warnings exist', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addWarning('ADTK-TEST-001', 'Warning', testSpan);
+                        collector.addWarning('ADTK-TEST-001', 'Warning', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
 
                         expect(collector.hasWarnings()).toBe(true);
                 });
@@ -365,7 +425,10 @@ describe('DiagnosticCollector', () => {
                 it('hasDiagnostics returns true when any diagnostic exists', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addHint('ADTK-TEST-001', 'Hint', testSpan);
+                        collector.addHint('ADTK-TEST-001', 'Hint', {
+                                span: testSpan,
+                                message: 'Message',
+                        });
 
                         expect(collector.hasDiagnostics()).toBe(true);
                 });
@@ -373,10 +436,18 @@ describe('DiagnosticCollector', () => {
                 it('getErrors returns only errors', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addError('ADTK-TEST-001', 'Error 1', testSpan);
-                        collector.addWarning('ADTK-TEST-002', 'Warning', testSpan);
-                        collector.addError('ADTK-TEST-003', 'Error 2', testSpan);
-                        collector.addInfo('ADTK-TEST-004', 'Info', testSpan);
+                        collector.addError('ADTK-TEST-001', 'Error 1', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addWarning('ADTK-TEST-002', 'Warning', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addError('ADTK-TEST-003', 'Error 2', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addInfo('ADTK-TEST-004', 'Info', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
 
                         const errors = collector.getErrors();
                         expect(errors).toHaveLength(2);
@@ -386,9 +457,15 @@ describe('DiagnosticCollector', () => {
                 it('getWarnings returns only warnings', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addError('ADTK-TEST-001', 'Error', testSpan);
-                        collector.addWarning('ADTK-TEST-002', 'Warning 1', testSpan);
-                        collector.addWarning('ADTK-TEST-003', 'Warning 2', testSpan);
+                        collector.addError('ADTK-TEST-001', 'Error', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addWarning('ADTK-TEST-002', 'Warning 1', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addWarning('ADTK-TEST-003', 'Warning 2', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
 
                         const warnings = collector.getWarnings();
                         expect(warnings).toHaveLength(2);
@@ -398,9 +475,15 @@ describe('DiagnosticCollector', () => {
                 it('getInfos returns only infos', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addInfo('ADTK-TEST-001', 'Info 1', testSpan);
-                        collector.addError('ADTK-TEST-002', 'Error', testSpan);
-                        collector.addInfo('ADTK-TEST-003', 'Info 2', testSpan);
+                        collector.addInfo('ADTK-TEST-001', 'Info 1', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addError('ADTK-TEST-002', 'Error', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addInfo('ADTK-TEST-003', 'Info 2', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
 
                         const infos = collector.getInfos();
                         expect(infos).toHaveLength(2);
@@ -410,9 +493,20 @@ describe('DiagnosticCollector', () => {
                 it('getHints returns only hints', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addHint('ADTK-TEST-001', 'Hint 1', testSpan);
-                        collector.addHint('ADTK-TEST-002', 'Hint 2', testSpan);
-                        collector.addWarning('ADTK-TEST-003', 'Warning', testSpan);
+                        collector.addHint('ADTK-TEST-001', 'Hint 1', {
+                                span: testSpan,
+                                message: 'Message',
+                        });
+                        collector.addHint('ADTK-TEST-002', 'Hint 2', {
+                                span: testSpan,
+                                message: 'Message',
+                        });
+                        collector.addWarning('ADTK-TEST-003', 'Warning', [
+                                {
+                                        span: testSpan,
+                                        message: 'Message',
+                                },
+                        ]);
 
                         const hints = collector.getHints();
                         expect(hints).toHaveLength(2);
@@ -422,10 +516,19 @@ describe('DiagnosticCollector', () => {
                 it('getAll returns all diagnostics', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addError('ADTK-TEST-001', 'Error', testSpan);
-                        collector.addWarning('ADTK-TEST-002', 'Warning', testSpan);
-                        collector.addInfo('ADTK-TEST-003', 'Info', testSpan);
-                        collector.addHint('ADTK-TEST-004', 'Hint', testSpan);
+                        collector.addError('ADTK-TEST-001', 'Error', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addWarning('ADTK-TEST-002', 'Warning', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addInfo('ADTK-TEST-003', 'Info', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addHint('ADTK-TEST-004', 'Hint', {
+                                span: testSpan,
+                                message: 'Message',
+                        });
 
                         const all = collector.getAll();
                         expect(all).toHaveLength(4);
@@ -436,20 +539,32 @@ describe('DiagnosticCollector', () => {
 
                         expect(collector.count()).toBe(0);
 
-                        collector.addError('ADTK-TEST-001', 'Error', testSpan);
+                        collector.addError('ADTK-TEST-001', 'Error', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
                         expect(collector.count()).toBe(1);
 
-                        collector.addWarning('ADTK-TEST-002', 'Warning', testSpan);
+                        collector.addWarning('ADTK-TEST-002', 'Warning', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
                         expect(collector.count()).toBe(2);
                 });
 
                 it('countByCategory returns count for specific category', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addError('ADTK-TEST-001', 'Error 1', testSpan);
-                        collector.addError('ADTK-TEST-002', 'Error 2', testSpan);
-                        collector.addWarning('ADTK-TEST-003', 'Warning', testSpan);
-                        collector.addInfo('ADTK-TEST-004', 'Info', testSpan);
+                        collector.addError('ADTK-TEST-001', 'Error 1', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addError('ADTK-TEST-002', 'Error 2', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addWarning('ADTK-TEST-003', 'Warning', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addInfo('ADTK-TEST-004', 'Info', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
 
                         expect(collector.countByCategory('error')).toBe(2);
                         expect(collector.countByCategory('warning')).toBe(1);
@@ -462,8 +577,12 @@ describe('DiagnosticCollector', () => {
                 it('removes all diagnostics', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addError('ADTK-TEST-001', 'Error', testSpan);
-                        collector.addWarning('ADTK-TEST-002', 'Warning', testSpan);
+                        collector.addError('ADTK-TEST-001', 'Error', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addWarning('ADTK-TEST-002', 'Warning', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
                         expect(collector.count()).toBe(2);
 
                         collector.clear();
@@ -477,9 +596,13 @@ describe('DiagnosticCollector', () => {
                 it('can add diagnostics after clear', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addError('ADTK-TEST-001', 'Error', testSpan);
+                        collector.addError('ADTK-TEST-001', 'Error', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
                         collector.clear();
-                        collector.addWarning('ADTK-TEST-002', 'Warning', testSpan);
+                        collector.addWarning('ADTK-TEST-002', 'Warning', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
 
                         expect(collector.count()).toBe(1);
                         expect(collector.hasWarnings()).toBe(true);
@@ -490,9 +613,15 @@ describe('DiagnosticCollector', () => {
                 it('accumulates multiple diagnostics of same category', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addError('ADTK-TEST-001', 'Error 1', testSpan);
-                        collector.addError('ADTK-TEST-002', 'Error 2', testSpan);
-                        collector.addError('ADTK-TEST-003', 'Error 3', testSpan);
+                        collector.addError('ADTK-TEST-001', 'Error 1', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addError('ADTK-TEST-002', 'Error 2', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addError('ADTK-TEST-003', 'Error 3', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
 
                         expect(collector.count()).toBe(3);
                         expect(collector.getErrors()).toHaveLength(3);
@@ -501,12 +630,25 @@ describe('DiagnosticCollector', () => {
                 it('accumulates mixed categories', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addError('ADTK-TEST-001', 'Error 1', testSpan);
-                        collector.addWarning('ADTK-TEST-002', 'Warning 1', testSpan);
-                        collector.addError('ADTK-TEST-003', 'Error 2', testSpan);
-                        collector.addInfo('ADTK-TEST-004', 'Info 1', testSpan);
-                        collector.addHint('ADTK-TEST-005', 'Hint 1', testSpan);
-                        collector.addWarning('ADTK-TEST-006', 'Warning 2', testSpan);
+                        collector.addError('ADTK-TEST-001', 'Error 1', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addWarning('ADTK-TEST-002', 'Warning 1', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addError('ADTK-TEST-003', 'Error 2', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addInfo('ADTK-TEST-004', 'Info 1', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addHint('ADTK-TEST-005', 'Hint 1', {
+                                span: testSpan,
+                                message: 'Message',
+                        });
+                        collector.addWarning('ADTK-TEST-006', 'Warning 2', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
 
                         expect(collector.count()).toBe(6);
                         expect(collector.countByCategory('error')).toBe(2);
@@ -518,9 +660,15 @@ describe('DiagnosticCollector', () => {
                 it('maintains order of diagnostics', () => {
                         const collector = new DiagnosticCollector();
 
-                        collector.addError('ADTK-TEST-001', 'First', testSpan);
-                        collector.addWarning('ADTK-TEST-002', 'Second', testSpan);
-                        collector.addInfo('ADTK-TEST-003', 'Third', testSpan);
+                        collector.addError('ADTK-TEST-001', 'First', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addWarning('ADTK-TEST-002', 'Second', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
+                        collector.addInfo('ADTK-TEST-003', 'Third', [
+                                { span: testSpan, message: 'Message' },
+                        ]);
 
                         const all = collector.getAll();
                         expect(all[0].message.title).toBe('First');

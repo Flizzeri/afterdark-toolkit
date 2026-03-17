@@ -43,15 +43,13 @@ export function createDiagnostic(
         code: DiagnosticCode,
         category: DiagnosticCategory,
         message: DiagnosticMessage,
-        span: DiagnosticSpan,
-        relatedSpans?: readonly DiagnosticSpan[],
+        spans: DiagnosticSpan[],
 ): Diagnostic {
         return {
                 code,
                 category,
                 message,
-                span,
-                ...(relatedSpans && { relatedSpans }),
+                spans,
         };
 }
 

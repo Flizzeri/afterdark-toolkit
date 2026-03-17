@@ -142,6 +142,7 @@ export default [
                         '**/tmp',
                         '**/tsup.config.ts',
                         './eslint-rules',
+                        '**/vitest.config.ts',
                 ],
         },
 ];
