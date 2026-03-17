@@ -75,7 +75,7 @@ describe('watch/watcher', () => {
 
                         await waitForWatch();
                         watchProgram.close();
-                }, 10000);
+                });
 
                 it('calls onProgramUpdate on initial compilation', async () => {
                         const tsconfigPath = fixturePath('watch-test', 'tsconfig.json');
@@ -144,7 +144,7 @@ describe('watch/watcher', () => {
                                 fs.writeFileSync(watchTestFile, originalContent, 'utf-8');
                                 result.value.close();
                         }
-                }, 10000); // Increase timeout for watch tests
+                });
 
                 it('reports only changed files, not all files', async () => {
                         const tsconfigPath = fixturePath('multiple-files', 'tsconfig.json');
@@ -192,7 +192,7 @@ describe('watch/watcher', () => {
                                 fs.writeFileSync(userFilePath, originalContent, 'utf-8');
                                 result.value.close();
                         }
-                }, 10000);
+                });
 
                 it('calls onStatusChange callback', async () => {
                         const tsconfigPath = fixturePath('watch-test', 'tsconfig.json');
@@ -273,7 +273,7 @@ export const user: User = {
                                         fs.unlinkSync(errorFilePath);
                                 }
                         }
-                }, 10000);
+                });
 
                 it('does not report unchanged files as changed', async () => {
                         const tsconfigPath = fixturePath('multiple-files', 'tsconfig.json');
@@ -305,7 +305,7 @@ export const user: User = {
                         }
 
                         result.value.close();
-                }, 10000);
+                });
 
                 it('handles file deletion', async () => {
                         // Create a temporary file
@@ -342,7 +342,7 @@ export const user: User = {
                         }
 
                         result.value.close();
-                }, 10000);
+                });
 
                 it('handles new file creation', async () => {
                         const tsconfigPath = fixturePath('watch-test', 'tsconfig.json');
@@ -387,7 +387,7 @@ export const user: User = {
                                 }
                                 result.value.close();
                         }
-                }, 10000);
+                });
 
                 it('respects skipLibFiles option', async () => {
                         const tsconfigPath = fixturePath('lib-files', 'tsconfig.json');
@@ -453,7 +453,7 @@ export const user: User = {
                                 // Restore original content
                                 fs.writeFileSync(watchTestFile, originalContent, 'utf-8');
                         }
-                }, 10000);
+                });
 
                 it('reports compilation duration', async () => {
                         const tsconfigPath = fixturePath('watch-test', 'tsconfig.json');

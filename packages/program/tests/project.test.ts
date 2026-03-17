@@ -167,7 +167,7 @@ describe('project/loader', () => {
 
                         // Check that we got actual TypeScript errors
                         expect(errors.some((e) => e.code.startsWith('ADTK-TS-'))).toBe(true);
-                }, 10000);
+                });
 
                 it('returns error when neither tsconfig nor rootFiles provided', () => {
                         const diagnostics = new DiagnosticCollector();
