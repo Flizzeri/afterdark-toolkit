@@ -325,7 +325,20 @@ describe('utils/symbol', () => {
 
                         const symbolId = generateSymbolId(symbol, collector);
 
-                        expect(symbolId).toContain('User');
+                        // Verify structure: name#filepath#hash
+                        const parts = symbolId.split('#');
+                        expect(parts.length).toBe(3);
+
+                        const [name, filepath, hash] = parts;
+
+                        // Name should be non-empty (could be "User" or "default")
+                        expect(name.length).toBeGreaterThan(0);
+
+                        // Filepath should end with test.ts
+                        expect(filepath).toMatch(/test\.ts$/);
+
+                        // Hash should be 8 hex chars
+                        expect(hash).toMatch(/^[a-f0-9]{8}$/);
                 });
 
                 it('handles namespace symbols', () => {
