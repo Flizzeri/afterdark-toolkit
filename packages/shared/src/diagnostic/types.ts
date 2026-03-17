@@ -6,7 +6,7 @@ export type DiagnosticCategory = 'fatal' | 'error' | 'warning' | 'info' | 'hint'
 
 type Digit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
 type FourDigits = `${Digit}${Digit}${Digit}${Digit}`;
-type FiveDigits = `${FourDigits}${Digit}`;
+type FiveDigits = `1${FourDigits}`;
 
 export type DiagnosticPrefix = 'ADTK' | 'PLUGIN';
 
