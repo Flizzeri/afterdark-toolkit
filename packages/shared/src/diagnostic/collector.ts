@@ -2,7 +2,6 @@
 
 import type { Diagnostic, DiagnosticCategory, DiagnosticCode, DiagnosticSpan } from './types';
 import { createDiagnostic, isFatal, throwFatal } from './utils';
-import type { SourceSpan } from '../source';
 
 /**
  * Collects and manages diagnostics during compilation.
@@ -107,15 +106,11 @@ export class DiagnosticCollector {
         public addError(
                 code: DiagnosticCode,
                 title: string,
-                span: SourceSpan,
+                spans: DiagnosticSpan[],
                 options?: {
                         description?: string;
                         notes?: readonly string[];
                         codeExample?: string;
-                        message?: string;
-                        issue?: string;
-                        help?: string;
-                        relatedSpans?: readonly DiagnosticSpan[];
                 },
         ): void {
                 this.add(
@@ -130,13 +125,7 @@ export class DiagnosticCollector {
                                                 codeExample: options.codeExample,
                                         }),
                                 },
-                                {
-                                        span,
-                                        message: options?.message ?? title,
-                                        ...(options?.issue && { issue: options.issue }),
-                                        ...(options?.help && { help: options.help }),
-                                },
-                                options?.relatedSpans,
+                                spans,
                         ),
                 );
         }
@@ -144,15 +133,11 @@ export class DiagnosticCollector {
         public addWarning(
                 code: DiagnosticCode,
                 title: string,
-                span: SourceSpan,
+                spans: DiagnosticSpan[],
                 options?: {
                         description?: string;
                         notes?: readonly string[];
                         codeExample?: string;
-                        message?: string;
-                        issue?: string;
-                        help?: string;
-                        relatedSpans?: readonly DiagnosticSpan[];
                 },
         ): void {
                 this.add(
@@ -167,13 +152,7 @@ export class DiagnosticCollector {
                                                 codeExample: options.codeExample,
                                         }),
                                 },
-                                {
-                                        span,
-                                        message: options?.message ?? title,
-                                        ...(options?.issue && { issue: options.issue }),
-                                        ...(options?.help && { help: options.help }),
-                                },
-                                options?.relatedSpans,
+                                spans,
                         ),
                 );
         }
@@ -181,12 +160,11 @@ export class DiagnosticCollector {
         public addInfo(
                 code: DiagnosticCode,
                 title: string,
-                span: SourceSpan,
+                spans: DiagnosticSpan[],
                 options?: {
                         description?: string;
                         notes?: readonly string[];
                         message?: string;
-                        relatedSpans?: readonly DiagnosticSpan[];
                 },
         ): void {
                 this.add(
@@ -198,11 +176,7 @@ export class DiagnosticCollector {
                                         description: options?.description ?? title,
                                         ...(options?.notes && { notes: options.notes }),
                                 },
-                                {
-                                        span,
-                                        message: options?.message ?? title,
-                                },
-                                options?.relatedSpans,
+                                spans,
                         ),
                 );
         }
@@ -210,7 +184,7 @@ export class DiagnosticCollector {
         public addHint(
                 code: DiagnosticCode,
                 title: string,
-                span: SourceSpan,
+                span?: DiagnosticSpan,
                 options?: {
                         description?: string;
                         help?: string;
@@ -225,11 +199,7 @@ export class DiagnosticCollector {
                                         title,
                                         description: options?.description ?? title,
                                 },
-                                {
-                                        span,
-                                        message: options?.message ?? title,
-                                        ...(options?.help && { help: options.help }),
-                                },
+                                span ? [span] : [],
                         ),
                 );
         }
