@@ -1,0 +1,7 @@
+# Ignore all generated files
+*.js
+*.d.ts
+*.map
+*.backup
+dist/
+temp-emit/
