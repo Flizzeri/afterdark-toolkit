@@ -3,12 +3,6 @@
 '@adtk/shared': patch
 ---
 
----
-
-## "@adtk/program": minor
-
----
-
 Initial release of `@adtk/program` package
 
 This package provides the TS Program wrapper to be used in Afterdark Toolkit's core:
