@@ -52,7 +52,7 @@ catalogs:
       specifier: ^16.2.6
       version: 16.2.7
     prettier:
-      specifier: ^3.6.2
+      specifier: ^3.8.0
       version: 3.8.0
     rimraf:
       specifier: ^6.1.0
