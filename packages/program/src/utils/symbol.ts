@@ -19,7 +19,7 @@ export function generateSymbolId(symbol: ts.Symbol, diagnostics: DiagnosticColle
                 if (!nameHashResult.ok) {
                         diagnostics.add(
                                 createDiagnostic(
-                                        'ADTK-FATAL-001',
+                                        'ADTK-FATAL-0001',
                                         'fatal',
                                         {
                                                 title: 'Symbol ID generation failed',
@@ -40,7 +40,7 @@ export function generateSymbolId(symbol: ts.Symbol, diagnostics: DiagnosticColle
         if (!filePathResult.ok) {
                 diagnostics.add(
                         createDiagnostic(
-                                'ADTK-FATAL-002',
+                                'ADTK-FATAL-0002',
                                 'fatal',
                                 {
                                         title: 'Invalid file path in symbol declaration',
@@ -59,7 +59,7 @@ export function generateSymbolId(symbol: ts.Symbol, diagnostics: DiagnosticColle
         if (!posHashResult.ok) {
                 diagnostics.add(
                         createDiagnostic(
-                                'ADTK-FATAL-003',
+                                'ADTK-FATAL-0003',
                                 'fatal',
                                 {
                                         title: 'Symbol location hashing failed',

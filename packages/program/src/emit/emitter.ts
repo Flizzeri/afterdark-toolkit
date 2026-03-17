@@ -96,7 +96,7 @@ export function emitProgram(
         } catch (error) {
                 diagnostics.add(
                         createDiagnostic(
-                                'ADTK-EMIT-001',
+                                'ADTK-EMIT-0001',
                                 'fatal',
                                 {
                                         title: 'Emit crashed',
