@@ -31,7 +31,7 @@ catalog:
 
         # Git Hooks
         husky: ^9.1.7
-        'lint-staged': ^16.2.6
+        'lint-staged': ^16.4.0
 
         # Commit Linting
         '@commitlint/cli': ^20.3.1
