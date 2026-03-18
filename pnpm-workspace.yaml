@@ -10,7 +10,7 @@ catalog:
 
         # Testing
         vitest: ^4.0.8
-        '@vitest/coverage-v8': ^4.0.8
+        '@vitest/coverage-v8': ^4.1.0
 
         # Linting
         eslint: ^9.39.1
