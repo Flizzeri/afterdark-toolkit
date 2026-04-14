@@ -3,7 +3,9 @@
 export { loadProject } from './project';
 export type { ProjectConfig, LoadOptions, LoadError } from './project';
 
-export type { Program, SourceFile } from './program';
+export type { Program } from './program';
+
+export type { SourceFile } from './source';
 
 export { convertDiagnostics, toAdtkDiagnosticCode } from './diagnostics';
 export type { TypeScriptDiagnosticCode } from './diagnostics';

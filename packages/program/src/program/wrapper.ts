@@ -3,9 +3,9 @@
 import { filePath, type FilePath } from '@adtk/shared';
 import type * as ts from 'typescript';
 
-import type { Program, SourceFile } from './types.js';
-import type { LoadOptions } from '../project/types.js';
-import { SourceFileWrapper } from '../source/wrapper.js';
+import type { Program } from './types.js';
+import type { LoadOptions } from '../project';
+import { SourceFileWrapper, type SourceFile } from '../source';
 
 export class ProgramWrapper implements Program {
         private sourceFileCache = new Map<FilePath, SourceFile>();

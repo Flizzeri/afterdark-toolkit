@@ -1,7 +1,9 @@
 // packages/program/src/program/types.ts
 
-import type { FilePath, SourceSpan, SourcePosition } from '@adtk/shared';
+import type { FilePath } from '@adtk/shared';
 import type * as ts from 'typescript';
+
+import type { SourceFile } from '../source';
 
 export interface Program {
         getSourceFiles(): readonly SourceFile[];
@@ -17,11 +19,4 @@ export interface Program {
                 emitOnlyDtsFiles?: boolean,
                 customTransformers?: ts.CustomTransformers,
         ): ts.EmitResult;
-}
-
-export interface SourceFile {
-        readonly fileName: FilePath;
-        readonly text: string;
-        getSpan(node: ts.Node): SourceSpan;
-        getPosition(offset: number): SourcePosition;
 }

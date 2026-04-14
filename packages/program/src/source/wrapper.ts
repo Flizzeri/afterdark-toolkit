@@ -14,14 +14,16 @@ import type { SourceFile } from './types.js';
 export class SourceFileWrapper implements SourceFile {
         public readonly fileName: FilePath;
         public readonly text: string;
+        public readonly tsSourceFile: ts.SourceFile;
 
-        public constructor(private readonly tsSourceFile: ts.SourceFile) {
+        public constructor(tsSourceFile: ts.SourceFile) {
                 const filePathResult = filePath(tsSourceFile.fileName);
                 if (!filePathResult.ok) {
                         throw new Error(`Invalid file path: ${tsSourceFile.fileName}`);
                 }
                 this.fileName = filePathResult.value;
                 this.text = tsSourceFile.text;
+                this.tsSourceFile = tsSourceFile;
         }
 
         public getSpan(node: ts.Node): SourceSpan {
