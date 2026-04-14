@@ -26,7 +26,9 @@
                 "lint": "eslint src --ext .ts"
         },
         "dependencies": {
-                "@adtk/shared": "workspace:*"
+                "@adtk/shared": "workspace:*",
+                "@adtk/program": "workspace:*",
+                "minimatch": "catalog:"
         },
         "devDependencies": {
                 "typescript": "catalog:",

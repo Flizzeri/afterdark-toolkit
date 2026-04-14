@@ -56,5 +56,8 @@
                 "tsx": "catalog:",
                 "turbo": "catalog:",
                 "typescript-eslint": "catalog:"
+        },
+        "dependencies": {
+                "minimatch": "catalog:"
         }
 }
