@@ -1,7 +1,7 @@
 // packages/shared/src/source/utils.ts
 
 import type { SourcePosition, SourceSpan } from './types.js';
-import type { FilePath } from '../branded/types.js';
+import type { FilePath } from '../branded';
 
 export function createSpan(file: FilePath, start: SourcePosition, end: SourcePosition): SourceSpan {
         return { file, start, end };

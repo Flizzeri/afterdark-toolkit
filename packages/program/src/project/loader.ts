@@ -6,8 +6,7 @@ import * as ts from 'typescript';
 import { parseTsConfig, resolveRootFiles } from './config.js';
 import type { ProjectConfig, LoadOptions, LoadError } from './types.js';
 import { convertDiagnostics } from '../diagnostics';
-import type { Program } from '../program/types.js';
-import { ProgramWrapper } from '../program/wrapper.js';
+import { ProgramWrapper, type Program } from '../program';
 
 export function loadProject(
         config: ProjectConfig,

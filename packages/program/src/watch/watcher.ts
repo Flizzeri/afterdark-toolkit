@@ -5,7 +5,7 @@ import * as ts from 'typescript';
 
 import { convertDiagnostics } from '../diagnostics';
 import type { WatchConfig, WatchProgram, WatchError } from './types.js';
-import { ProgramWrapper } from '../program/wrapper';
+import { ProgramWrapper } from '../program';
 
 const TS_DIAGNOSTIC_STARTING_COMPILATION = 6031;
 const TS_DIAGNOSTIC_FILE_CHANGE_DETECTED = 6032;
