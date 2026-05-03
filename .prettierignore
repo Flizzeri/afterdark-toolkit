@@ -1,0 +1,8 @@
+dist
+node_modules
+.afterdark/cache
+tmp
+tsup.config.ts
+eslint-rules
+packages/program/tests/fixtures/compiler-errors
+vitest.config.ts

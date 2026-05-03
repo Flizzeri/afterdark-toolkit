@@ -49,6 +49,7 @@
                 "eslint-plugin-import": "catalog:",
                 "eslint-plugin-import-x": "catalog:",
                 "eslint-plugin-jsdoc": "catalog:",
+                "globals": "catalog:",
                 "husky": "catalog:",
                 "lint-staged": "catalog:",
                 "prettier": "catalog:",

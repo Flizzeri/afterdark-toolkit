@@ -10,10 +10,7 @@ import path from 'path';
  * - The line after that must be empty.
  */
 
-/**
- * Get the git repository root.
- * Caches the result to avoid running git command repeatedly.
- */
+// Gets the git repository root and caches the result to avoid running git command repeatedly.
 let gitRootCache = null;
 function getGitRoot() {
         if (gitRootCache !== null) {
@@ -29,8 +26,7 @@ function getGitRoot() {
                 gitRootCache = result.replace(/\\/g, '/');
                 return gitRootCache;
         } catch (error) {
-                // Not in a git repo or git not available
-                // Fall back to process.cwd()
+                // If not in a git repo or git not available fall back to process.cwd()
                 gitRootCache = process.cwd().replace(/\\/g, '/');
                 return gitRootCache;
         }
@@ -57,29 +53,28 @@ export default {
 
                                 let index = 0;
 
-                                // ---- 1. Handle shebang ----
+                                // 1. Handle shebang
                                 const first = lines[0] ?? '';
                                 const hasShebang = first.startsWith('#!');
 
                                 if (hasShebang) {
-                                        index = 1; // skip shebang
+                                        index = 1;
                                 }
 
                                 const headerLine = lines[index] ?? '';
                                 const blankLine = lines[index + 1] ?? '';
 
-                                // ---- 2. Compute expected path (relative to git root) ----
+                                // 2. Compute expected path (relative to git root)
                                 const gitRoot = getGitRoot();
                                 const absolutePath = path.resolve(filename).replace(/\\/g, '/');
 
-                                // Make path relative to git root
                                 const relativePath = absolutePath.startsWith(gitRoot)
-                                        ? absolutePath.slice(gitRoot.length + 1) // +1 to remove leading /
-                                        : filename.replace(/\\/g, '/'); // Fallback if path resolution fails
+                                        ? absolutePath.slice(gitRoot.length + 1)
+                                        : filename.replace(/\\/g, '/');
 
                                 const expectedHeader = `// ${relativePath}`;
 
-                                // ---- 3. Validate header comment ----
+                                // 3. Validate header comment
                                 if (!headerLine.startsWith('// ')) {
                                         context.report({
                                                 node,
@@ -121,7 +116,7 @@ export default {
                                         });
                                 }
 
-                                // ---- 4. Validate blank line ----
+                                // 4. Validate blank line
                                 if (blankLine.trim() !== '') {
                                         context.report({
                                                 node,
