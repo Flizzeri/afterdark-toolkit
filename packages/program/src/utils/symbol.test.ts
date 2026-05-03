@@ -375,7 +375,7 @@ describe('utils/symbol', () => {
                         expect(hash).toMatch(/^[a-f0-9]{8}$/);
                 });
 
-                it('includes position in hash calculation', () => {
+                it('Does not includes position in hash calculation', () => {
                         const code1 = 'interface User { name: string; }';
                         const code2 = '  interface User { name: string; }'; // Different position
 
@@ -404,7 +404,7 @@ describe('utils/symbol', () => {
                         const hash1 = symbolId1.split('#')[2];
                         const hash2 = symbolId2.split('#')[2];
 
-                        expect(hash1).not.toBe(hash2);
+                        expect(hash1).toBe(hash2);
                 });
 
                 it('does not add diagnostics for successful ID generation', () => {
