@@ -1,0 +1,15 @@
+// packages/core/tests/queries/tsconfig.json
+
+{
+        "extends": "../../../../tsconfig.test.json",
+        "compilerOptions": {
+                "outDir": "./dist",
+                "rootDir": ".",
+                "lib": ["ES2022"],
+                "skipLibCheck": true,
+                "noUnusedLocals": false,
+                "noUnusedParameters": false
+        },
+        "include": ["*.ts", "src/**/*.ts"],
+        "exclude": ["*.test.ts", "dist"]
+}
