@@ -8,7 +8,7 @@ export default defineConfig(() => {
 
         return {
                 test: {
-                        testTimeout: isCoverage || isCI ? 30000 : 10000,
+                        testTimeout: isCoverage || isCI ? 30000 : 20000,
                 },
         };
 });

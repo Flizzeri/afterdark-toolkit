@@ -1,3 +1,5 @@
+// packages/program/tests/fixtures/compiler-errors/errors.ts
+//
 // Type errors intentionally
 export interface User {
         name: string;

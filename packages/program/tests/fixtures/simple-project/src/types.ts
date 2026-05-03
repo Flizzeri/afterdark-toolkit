@@ -1,3 +1,5 @@
+// packages/program/tests/fixtures/simple-project/src/types.ts
+
 /**
  * A user in the system.
  */

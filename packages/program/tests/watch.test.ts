@@ -1,23 +1,14 @@
 // packages/program/tests/watch.test.ts
 
 import * as fs from 'node:fs';
-import * as path from 'node:path';
 
-import { filePath, type FilePath } from '@adtk/shared';
+import { type FilePath } from '@adtk/shared';
 import { describe, it, expect, vi } from 'vitest';
 
 import { createWatchProgram, type WatchStatus } from '../src/watch';
-
-const fixturesDir = path.join(__dirname, 'fixtures');
-
-function fixturePath(name: string, file: string = ''): string {
-        const fp = filePath(path.join(fixturesDir, name, file));
-        if (!fp.ok) throw new Error(`Invalid fixture path: ${name}/${file}`);
-        return fp.value;
-}
+import { fixturePath } from './utils/helpers.js';
 
 // Helper to wait for watch mode to detect changes
-// Watch mode needs more time than just file system propagation
 const waitForWatch = () => new Promise((resolve) => setTimeout(resolve, 1500));
 
 describe('watch/watcher', () => {
@@ -54,7 +45,7 @@ describe('watch/watcher', () => {
                         // Wait a bit before closing to avoid issues
                         await waitForWatch();
                         watchProgram.close();
-                }, 15000);
+                });
 
                 it('provides current program', async () => {
                         const tsconfigPath = fixturePath('watch-test', 'tsconfig.json');

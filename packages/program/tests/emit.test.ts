@@ -9,21 +9,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 import { emitProgram } from '../src/emit';
 import { loadProject } from '../src/project';
-
-const fixturesDir = path.join(__dirname, 'fixtures');
-const tempDir = path.join(fixturesDir, 'temp-emit');
-
-function fixturePath(name: string, file: string = ''): string {
-        const fp = filePath(path.join(fixturesDir, name, file));
-        if (!fp.ok) throw new Error(`Invalid fixture path: ${name}/${file}`);
-        return fp.value;
-}
-
-function tempPath(file: string = ''): string {
-        const fp = filePath(path.join(tempDir, file));
-        if (!fp.ok) throw new Error(`Invalid temp path: ${file}`);
-        return fp.value;
-}
+import { fixturePath, tempDir, tempPath } from './utils/helpers.js';
 
 describe('emit/emitter', () => {
         beforeEach(() => {

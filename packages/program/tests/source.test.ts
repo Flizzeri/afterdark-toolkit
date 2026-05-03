@@ -1,20 +1,11 @@
 // packages/program/tests/source.test.ts
 
-import * as path from 'node:path';
-
-import { filePath, DiagnosticCollector } from '@adtk/shared';
+import { DiagnosticCollector } from '@adtk/shared';
 import * as ts from 'typescript';
 import { describe, it, expect } from 'vitest';
 
 import { loadProject } from '../src/project';
-
-const fixturesDir = path.join(__dirname, 'fixtures');
-
-function fixturePath(name: string, file: string = ''): string {
-        const fp = filePath(path.join(fixturesDir, name, file));
-        if (!fp.ok) throw new Error(`Invalid fixture path: ${name}/${file}`);
-        return fp.value;
-}
+import { fixturePath } from './utils/helpers.js';
 
 describe('source/wrapper', () => {
         describe('SourceFile', () => {
