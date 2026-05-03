@@ -1,0 +1,13 @@
+// packages/core/tests/dependencies/tsconfig.json
+
+{
+        "extends": "../../../../tsconfig.test.json",
+        "compilerOptions": {
+                "outDir": "./dist",
+                "rootDir": ".",
+                "lib": ["ES2022"],
+                "skipLibCheck": true
+        },
+        "include": ["*.ts"],
+        "exclude": ["*.test.ts", "dist"]
+}
