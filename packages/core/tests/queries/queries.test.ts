@@ -6,6 +6,7 @@ import { loadProject, type Program } from '@adtk/program';
 import { filePath, symbolId, DiagnosticCollector, type FilePath, jsDocTagName } from '@adtk/shared';
 import { describe, it, expect, beforeAll } from 'vitest';
 
+import { CoreDiagnostics } from '../../src/diagnostics.js';
 import { queryFixture, resolveSymbolIds } from '../utils/helpers.js';
 
 // ---------------------------------------------------------------------------
@@ -194,9 +195,15 @@ describe("source: 'files'", () => {
                 });
 
                 expect(queryResult.ok).toBe(true);
-                expect(diagnostics.getWarnings().some((w) => w.code === 'ADTK-CORE-2000')).toBe(
-                        true,
-                );
+                expect(
+                        diagnostics
+                                .getWarnings()
+                                .some(
+                                        (w) =>
+                                                w.code ===
+                                                CoreDiagnostics.QUERY_FILE_NOT_IN_PROGRAM.code,
+                                ),
+                ).toBe(true);
         });
 
         it('returns err when all specified paths are absent from the program', () => {
@@ -261,9 +268,11 @@ describe("source: 'glob'", () => {
                 });
 
                 expect(queryResult.ok).toBe(false);
-                expect(diagnostics.getWarnings().some((w) => w.code === 'ADTK-CORE-2001')).toBe(
-                        true,
-                );
+                expect(
+                        diagnostics
+                                .getWarnings()
+                                .some((w) => w.code === CoreDiagnostics.QUERY_GLOB_NO_MATCH.code),
+                ).toBe(true);
         });
 });
 
@@ -344,9 +353,11 @@ describe("source: 'call-sites'", () => {
                 });
 
                 expect(queryResult.ok).toBe(false);
-                expect(diagnostics.getWarnings().some((w) => w.code === 'ADTK-CORE-2003')).toBe(
-                        true,
-                );
+                expect(
+                        diagnostics
+                                .getWarnings()
+                                .some((w) => w.code === CoreDiagnostics.QUERY_NO_CALL_SITES.code),
+                ).toBe(true);
         });
 });
 
@@ -744,7 +755,15 @@ describe('filter chain (multiple filters)', () => {
                 if (!queryResult.ok) return;
                 expect(queryResult.value.size).toBe(0);
                 // The info diagnostic from the short-circuit must be present
-                expect(diagnostics.getInfos().some((i) => i.code === 'ADTK-CORE-2100')).toBe(true);
+                expect(
+                        diagnostics
+                                .getInfos()
+                                .some(
+                                        (i) =>
+                                                i.code ===
+                                                CoreDiagnostics.QUERY_FILTER_ELIMINATED_ALL.code,
+                                ),
+                ).toBe(true);
         });
 
         it('chaining kind + exclude-pattern narrows to a precise subset', () => {

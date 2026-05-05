@@ -2,6 +2,7 @@
 
 import { describe, it, expect } from 'vitest';
 
+import { CoreDiagnostics } from '../../src/diagnostics.js';
 import {
         extractIR,
         asObject,
@@ -220,18 +221,34 @@ describe('function type properties', () => {
                 expect(obj.properties).toHaveLength(0);
         });
 
-        it('WithFunctions triggers ADTK-CORE-0105 error', () => {
+        it('WithFunctions triggers No Methods error', () => {
                 const { diagnostics } = extractIR(F, 'WithFunctions');
-                expect(diagnostics.getErrors().some((e) => e.code === 'ADTK-CORE-0105')).toBe(true);
+                expect(
+                        diagnostics
+                                .getErrors()
+                                .some(
+                                        (e) =>
+                                                e.code ===
+                                                CoreDiagnostics.OBJECT_METHOD_NOT_SUPPORTED.code,
+                                ),
+                ).toBe(true);
         });
 });
 
 // 9. Method signatures
 
 describe('method signature error path', () => {
-        it('WithMethod triggers ADTK-CORE-0105 error for greet()', () => {
+        it('WithMethod triggers No Methods error for greet()', () => {
                 const { diagnostics } = extractIR(F, 'WithMethod');
-                expect(diagnostics.getErrors().some((e) => e.code === 'ADTK-CORE-0105')).toBe(true);
+                expect(
+                        diagnostics
+                                .getErrors()
+                                .some(
+                                        (e) =>
+                                                e.code ===
+                                                CoreDiagnostics.OBJECT_METHOD_NOT_SUPPORTED.code,
+                                ),
+                ).toBe(true);
         });
 });
 

@@ -2,6 +2,7 @@
 
 import { describe, it, expect } from 'vitest';
 
+import { CoreDiagnostics } from '../../src/diagnostics.js';
 import { extractIR, asUnsupported, IRNodeGuard } from '../utils/extraction.js';
 
 const F = 'extraction';
@@ -16,27 +17,45 @@ describe('un-instantiated generic type parameters', () => {
                 expect(u.originalText).toBeTruthy();
         });
 
-        it('Identity<T> emits ADTK-CORE-1001 warning', () => {
+        it('Identity<T> emits Type Parameter warning', () => {
                 const { diagnostics } = extractIR(F, 'Identity');
-                expect(diagnostics.getWarnings().some((w) => w.code === 'ADTK-CORE-1001')).toBe(
-                        true,
-                );
+                expect(
+                        diagnostics
+                                .getWarnings()
+                                .some(
+                                        (w) =>
+                                                w.code ===
+                                                CoreDiagnostics.UNSUPPORTED_TYPE_PARAMETER.code,
+                                ),
+                ).toBe(true);
         });
 
         it('Wrapper<T> → IRUnsupported (generic object)', () => {
                 const { ir, diagnostics } = extractIR(F, 'Wrapper');
                 asUnsupported(ir);
-                expect(diagnostics.getWarnings().some((w) => w.code === 'ADTK-CORE-1009')).toBe(
-                        true,
-                );
+                expect(
+                        diagnostics
+                                .getWarnings()
+                                .some(
+                                        (w) =>
+                                                w.code ===
+                                                CoreDiagnostics.UNSUPPORTED_GENERIC_OBJECT.code,
+                                ),
+                ).toBe(true);
         });
 
         it('Pair<A,B> → IRUnsupported property types', () => {
                 const { ir, diagnostics } = extractIR(F, 'Pair');
                 asUnsupported(ir);
-                expect(diagnostics.getWarnings().some((w) => w.code === 'ADTK-CORE-1009')).toBe(
-                        true,
-                );
+                expect(
+                        diagnostics
+                                .getWarnings()
+                                .some(
+                                        (w) =>
+                                                w.code ===
+                                                CoreDiagnostics.UNSUPPORTED_GENERIC_OBJECT.code,
+                                ),
+                ).toBe(true);
         });
 });
 
@@ -63,11 +82,18 @@ describe('conditional types', () => {
                 asUnsupported(ir);
         });
 
-        it('each conditional emits ADTK-CORE-1002', () => {
+        it('each conditional emits Usupported Conditional', () => {
                 for (const name of ['IsString', 'NonNullable2', 'ReturnType2', 'Flatten']) {
                         const { diagnostics } = extractIR(F, name);
                         expect(
-                                diagnostics.getWarnings().some((w) => w.code === 'ADTK-CORE-1002'),
+                                diagnostics
+                                        .getWarnings()
+                                        .some(
+                                                (w) =>
+                                                        w.code ===
+                                                        CoreDiagnostics.UNSUPPORTED_CONDITIONAL
+                                                                .code,
+                                        ),
                                 `expected ADTK-CORE-1002 for ${name}`,
                         ).toBe(true);
                 }

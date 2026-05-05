@@ -2,6 +2,7 @@
 
 import { describe, it, expect } from 'vitest';
 
+import { CoreDiagnostics } from '../../src/diagnostics.js';
 import { extractIR, asIntersection, asObject, getProp, IRNodeGuard } from '../utils/extraction.js';
 
 const F = 'extraction';
@@ -156,7 +157,15 @@ describe('intersection with union member', () => {
 describe('function type properties in intersection', () => {
         it('CallableWithId extracts with error', () => {
                 const { ir, diagnostics } = extractIR(F, 'CallableWithId');
-                expect(diagnostics.getErrors().some((e) => e.code === 'ADTK-CORE-0105')).toBe(true);
+                expect(
+                        diagnostics
+                                .getErrors()
+                                .some(
+                                        (e) =>
+                                                e.code ===
+                                                CoreDiagnostics.OBJECT_METHOD_NOT_SUPPORTED.code,
+                                ),
+                ).toBe(true);
                 // checker resolves & HasId & Callable into a flat object
                 expect(IRNodeGuard.isObject(ir) || IRNodeGuard.isIntersection(ir)).toBe(true);
         });
