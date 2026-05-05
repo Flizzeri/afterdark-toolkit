@@ -13,6 +13,7 @@ import {
 import type * as ts from 'typescript';
 
 import type { ParsedAnnotation } from './types.js';
+import { CoreDiagnostics } from '../diagnostics.js';
 
 /**
  * Parses JSDoc annotations from a TypeScript symbol.
@@ -91,16 +92,12 @@ function parseAnnotation(
                 // Symbol without declaration - create annotation with synthetic span
                 const filePathResult = filePath(sourceFile.fileName);
                 if (!filePathResult.ok) {
-                        diagnostics.add({
-                                code: 'ADTK-CORE-1004',
-                                category: 'fatal',
-                                message: {
-                                        title: 'Invalid source file path for annotation',
-                                        description: `Cannot create FilePath for annotation on symbol '${symbol.getName()}': ${filePathResult.error}`,
-                                },
-                                spans: [],
-                        });
-                        // Fatal diagnostic throws, unreachable
+                        diagnostics.add(
+                                CoreDiagnostics.ANNOTATION_INVALID_FILE_PATH.new(
+                                        symbol.getName(),
+                                        filePathResult.error,
+                                ),
+                        ); // Fatal diagnostic throws, unreachable
                         return err(undefined);
                 }
 
@@ -120,14 +117,12 @@ function parseAnnotation(
         if (!jsdocNode) {
                 // JSDoc tag exists but we can't find its AST node
                 // This shouldn't happen but handle gracefully
-                diagnostics.addWarning('ADTK-CORE-1001', 'Cannot locate JSDoc tag in source', [], {
-                        description: `The annotation @${tag.name} exists on symbol '${symbol.getName()}' but its source location could not be determined.`,
-                        notes: [
-                                'The annotation will still be processed',
-                                'Source span will point to the symbol declaration instead',
-                                'This is likely an internal issue with JSDoc AST traversal',
-                        ],
-                });
+                diagnostics.add(
+                        CoreDiagnostics.ANNOTATION_TAG_LOCATION_UNKNOWN.new(
+                                tag.name,
+                                symbol.getName(),
+                        ),
+                );
 
                 return ok({
                         tag: tagName,
@@ -212,44 +207,8 @@ function parseAnnotationArguments(
         const span = node ? getSpanFromNode(node, sourceFile, diagnostics) : null;
 
         if (span) {
-                diagnostics.addWarning(
-                        'ADTK-CORE-1002',
-
-                        'Cannot parse annotation argument',
-
-                        [
-                                {
-                                        span,
-
-                                        message: `Annotation @${tagName}(${trimmed}) has unparseable arguments`,
-
-                                        issue: 'Arguments should be valid JSON or literal values',
-
-                                        help: 'Use JSON syntax: @tag(42), @tag("text"), @tag({ key: "value" })',
-                                },
-                        ],
-
-                        {
-                                description: `The arguments to @${tagName} could not be parsed as structured data.`,
-
-                                notes: [
-                                        'The raw text will be used as a string value instead',
-
-                                        'Valid formats:',
-
-                                        '  - Numbers: @min(18)',
-
-                                        '  - Strings: @pattern("^[A-Z]")',
-
-                                        '  - Booleans: @required(true)',
-
-                                        '  - Objects: @range({ min: 0, max: 100 })',
-
-                                        '  - Arrays: @enum([1, 2, 3])',
-
-                                        `Found: ${trimmed}`,
-                                ],
-                        },
+                diagnostics.add(
+                        CoreDiagnostics.ANNOTATION_UNPARSEABLE_ARGUMENT.new(span, tagName, trimmed),
                 );
         }
 
@@ -440,15 +399,12 @@ function getSpanFromNode(
 
         const filePathResult = filePath(sourceFile.fileName);
         if (!filePathResult.ok) {
-                diagnostics.add({
-                        code: 'ADTK-CORE-1003',
-                        category: 'fatal',
-                        message: {
-                                title: 'Invalid source file path',
-                                description: `Cannot create FilePath from source file: ${filePathResult.error}`,
-                        },
-                        spans: [],
-                });
+                diagnostics.add(
+                        CoreDiagnostics.ANNOTATION_INVALID_FILE_PATH.new(
+                                sourceFile.fileName,
+                                filePathResult.error,
+                        ),
+                );
                 // Fatal diagnostic throws, this is unreachable
                 // Return dummy value to satisfy TypeScript
                 return {

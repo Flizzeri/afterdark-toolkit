@@ -8,6 +8,7 @@ import { applyFilter } from './filters.js';
 import { resolveSource } from './sources.js';
 import type { SymbolQuery } from './types.js';
 import { getDeclarationSymbol } from './utils.js';
+import { CoreDiagnostics } from '../diagnostics.js';
 
 export function executeQuery(
         query: SymbolQuery,
@@ -34,14 +35,9 @@ export function executeQuery(
                 symbols = applyFilter(symbols, filter);
 
                 if (symbols.size === 0) {
-                        diagnostics.addInfo('ADTK-CORE-2100', 'Filter eliminated all symbols', [], {
-                                description: `After applying filter of type "${filter.type}", no symbols remain.`,
-                                notes: [
-                                        'This may indicate the filter is too restrictive',
-                                        'Check that the filter criteria match your expectations',
-                                        'Remaining filters will not be applied as there are no symbols left',
-                                ],
-                        });
+                        diagnostics.add(
+                                CoreDiagnostics.QUERY_FILTER_ELIMINATED_ALL.new(filter.type),
+                        );
                         break;
                 }
         }
@@ -83,15 +79,7 @@ function resolveByIds(
                 if (symbol) {
                         symbols.set(id, symbol);
                 } else {
-                        diagnostics.addWarning('ADTK-CORE-2101', 'Symbol ID not found', [], {
-                                description: `Symbol with ID "${id}" was not found in the program.`,
-                                notes: [
-                                        'The symbol may have been removed or renamed',
-                                        'The symbol ID may be from a different compilation',
-                                        'Check that the symbol ID is correct',
-                                        'This symbol will be skipped in the results',
-                                ],
-                        });
+                        diagnostics.add(CoreDiagnostics.QUERY_SYMBOL_ID_NOT_FOUND.new(id));
                 }
         }
 

@@ -14,6 +14,7 @@ import type * as ts from 'typescript';
 import { extractSymbol, type SymbolExtractionResult } from '../extraction';
 import { executeQuery, type SymbolQuery } from '../querying';
 import type { ExtractionOptions, ExtractionResult, ExtractionError } from './types.js';
+import { CoreDiagnostics } from '../diagnostics';
 
 const DEFAULT_OPTIONS: ExtractionOptions = {
         extractAnnotations: true,
@@ -45,14 +46,7 @@ export function extractSymbols(
         const opts: ExtractionOptions = { ...DEFAULT_OPTIONS, ...options };
 
         if (queries.length === 0) {
-                diagnostics.addWarning('ADTK-CORE-1000', 'No queries provided', [], {
-                        description: 'extractSymbols() was called with an empty query list.',
-                        notes: [
-                                'No symbols will be extracted',
-                                'If you want to extract all symbols, use: { type: "all" }',
-                                'If you want specific symbols, provide query objects',
-                        ],
-                });
+                diagnostics.add(CoreDiagnostics.RESOLUTION_NO_QUERIES.new());
 
                 return ok({
                         symbols: new Map(),
@@ -67,14 +61,12 @@ export function extractSymbols(
                 const queryResult = executeQuery(query, program, diagnostics);
 
                 if (!queryResult.ok) {
-                        diagnostics.addError('ADTK-CORE-1001', 'Query execution failed', [], {
-                                description: `Failed to execute query: ${queryResult.error}`,
-                                notes: [
-                                        `Query type: ${query.type}`,
-                                        'The query may be malformed or reference non-existent files',
-                                        'Extraction will continue with remaining queries',
-                                ],
-                        });
+                        diagnostics.add(
+                                CoreDiagnostics.RESOLUTION_QUERY_FAILED.new(
+                                        query.type,
+                                        queryResult.error,
+                                ),
+                        );
 
                         if (opts.strictMode) {
                                 return err({
@@ -98,14 +90,7 @@ export function extractSymbols(
         }
 
         if (foundSymbols.size === 0) {
-                diagnostics.addWarning('ADTK-CORE-1002', 'No symbols matched queries', [], {
-                        description: `Executed ${queries.length} ${queries.length === 1 ? 'query' : 'queries'} but found no matching symbols.`,
-                        notes: [
-                                'Check that your queries are correctly formed',
-                                'Verify that the source files contain the expected types',
-                                'For annotation-based queries, ensure annotations are spelled correctly',
-                        ],
-                });
+                diagnostics.add(CoreDiagnostics.RESOLUTION_NO_SYMBOLS_MATCHED.new(queries.length));
 
                 return ok({
                         symbols: new Map(),
@@ -121,14 +106,12 @@ export function extractSymbols(
                 const declarations = tsSymbol.getDeclarations();
 
                 if (!declarations || declarations.length === 0) {
-                        diagnostics.addError('ADTK-CORE-1003', 'Symbol has no declarations', [], {
-                                description: `Symbol '${tsSymbol.getName()}' (${symbolId}) has no source declarations.`,
-                                notes: [
-                                        'This can happen with ambient declarations or compiler-generated symbols',
-                                        'The symbol exists in the type system but has no user-written source code',
-                                        'Extraction will skip this symbol and continue with others',
-                                ],
-                        });
+                        diagnostics.add(
+                                CoreDiagnostics.RESOLUTION_SYMBOL_NO_DECLARATIONS.new(
+                                        tsSymbol.getName(),
+                                        symbolId,
+                                ),
+                        );
 
                         failedExtractions++;
 
@@ -147,14 +130,13 @@ export function extractSymbols(
                 const filePathResult = filePath(tsSourceFile.fileName);
 
                 if (!filePathResult.ok) {
-                        diagnostics.addError('ADTK-CORE-1004', 'Invalid source file path', [], {
-                                description: `Cannot create FilePath from source file: ${filePathResult.error}`,
-                                notes: [
-                                        `Symbol: ${tsSymbol.getName()}`,
-                                        `File: ${tsSourceFile.fileName}`,
-                                        'This is likely an issue with the file path normalization',
-                                ],
-                        });
+                        diagnostics.add(
+                                CoreDiagnostics.RESOLUTION_INVALID_FILE_PATH.new(
+                                        tsSymbol.getName(),
+                                        tsSourceFile.fileName,
+                                        filePathResult.error,
+                                ),
+                        );
 
                         failedExtractions++;
 
@@ -171,18 +153,11 @@ export function extractSymbols(
                 const sourceFile = program.getSourceFile(filePathResult.value);
 
                 if (!sourceFile) {
-                        diagnostics.addError(
-                                'ADTK-CORE-1005',
-                                'Source file not found in program',
-                                [],
-                                {
-                                        description: `Source file ${filePathResult.value} is not part of the loaded program.`,
-                                        notes: [
-                                                `Symbol: ${tsSymbol.getName()}`,
-                                                'The file may have been excluded by tsconfig or skipLibFiles option',
-                                                'Check that the file is included in the compilation',
-                                        ],
-                                },
+                        diagnostics.add(
+                                CoreDiagnostics.RESOLUTION_FILE_NOT_IN_PROGRAM.new(
+                                        tsSymbol.getName(),
+                                        filePathResult.value,
+                                ),
                         );
 
                         failedExtractions++;
@@ -206,14 +181,13 @@ export function extractSymbols(
                 );
 
                 if (!extractionResult.ok) {
-                        diagnostics.addError('ADTK-CORE-1006', 'Symbol extraction failed', [], {
-                                description: `Failed to extract IR for symbol '${tsSymbol.getName()}': ${extractionResult.error.type}`,
-                                notes: [
-                                        `Symbol ID: ${symbolId}`,
-                                        `Error type: ${extractionResult.error.type}`,
-                                        'Extraction will skip this symbol and continue with others',
-                                ],
-                        });
+                        diagnostics.add(
+                                CoreDiagnostics.RESOLUTION_SYMBOL_EXTRACTION_FAILED.new(
+                                        tsSymbol.getName(),
+                                        symbolId,
+                                        extractionResult.error.type,
+                                ),
+                        );
 
                         failedExtractions++;
 
@@ -231,14 +205,12 @@ export function extractSymbols(
         }
 
         if (symbols.size === 0 && foundSymbols.size > 0) {
-                diagnostics.addError('ADTK-CORE-1007', 'All symbol extractions failed', [], {
-                        description: `Found ${foundSymbols.size} symbols but failed to extract all of them.`,
-                        notes: [
-                                `Attempted extractions: ${foundSymbols.size}`,
-                                `Failed extractions: ${failedExtractions}`,
-                                'Check previous diagnostics for specific extraction errors',
-                        ],
-                });
+                diagnostics.add(
+                        CoreDiagnostics.RESOLUTION_ALL_EXTRACTIONS_FAILED.new(
+                                foundSymbols.size,
+                                failedExtractions,
+                        ),
+                );
 
                 return err({
                         type: 'extraction-failed',
@@ -247,14 +219,13 @@ export function extractSymbols(
         }
 
         if (failedExtractions > 0) {
-                diagnostics.addWarning('ADTK-CORE-1008', 'Some symbols failed to extract', [], {
-                        description: `Successfully extracted ${symbols.size} symbols, but ${failedExtractions} failed.`,
-                        notes: [
-                                `Success rate: ${Math.round((symbols.size / foundSymbols.size) * 100)}%`,
-                                'Check previous diagnostics for specific extraction errors',
-                                'Failed symbols will be missing from the results',
-                        ],
-                });
+                diagnostics.add(
+                        CoreDiagnostics.RESOLUTION_SOME_EXTRACTIONS_FAILED.new(
+                                foundSymbols.size,
+                                symbols.size,
+                                failedExtractions,
+                        ),
+                );
         }
 
         return ok({

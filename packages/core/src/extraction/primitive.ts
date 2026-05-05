@@ -5,6 +5,7 @@ import * as ts from 'typescript';
 
 import type { IRPrimitive, PrimitiveKind } from '../ir';
 import type { ExtractionContext, ExtractionError } from './types.js';
+import { CoreDiagnostics } from '../diagnostics';
 import { extractMetadata } from '../metadata';
 
 export function extractPrimitive(
@@ -22,25 +23,8 @@ export function extractPrimitive(
         const primitiveKind = getPrimitiveKind(type);
         if (!primitiveKind) {
                 const typeText = context.checker.typeToString(type);
-
-                context.diagnostics.addError(
-                        'ADTK-CORE-0001',
-                        'Unknown primitive type',
-                        [
-                                {
-                                        span: context.sourceFile.getSpan(node),
-                                        message: `Cannot determine primitive kind for type '${typeText}'`,
-                                        help: 'This type appears to be a primitive but its specific kind could not be determined',
-                                },
-                        ],
-                        {
-                                description: `The type '${typeText}' has primitive type flags but doesn't match any known primitive kind.`,
-                                notes: [
-                                        'This is likely an internal error in the type extraction logic',
-                                        'Primitive types should be one of: string, number, boolean, bigint, symbol, null, undefined, void, never, any, unknown',
-                                ],
-                        },
-                );
+                const span = context.sourceFile.getSpan(node);
+                context.diagnostics.add(CoreDiagnostics.PRIMITIVE_UNKNOWN_KIND.new(span, typeText));
 
                 return err({
                         type: 'internal-error',

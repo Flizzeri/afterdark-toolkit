@@ -5,6 +5,7 @@ import * as ts from 'typescript';
 
 import type { IRTuple, IRTupleElement } from '../ir';
 import type { ExtractionContext, ExtractionError } from './types.js';
+import { CoreDiagnostics } from '../diagnostics';
 import { extractMetadata } from '../metadata';
 
 export function extractTuple(
@@ -48,26 +49,10 @@ function extractTupleFromAstNode(
 
                 if (isRest && foundRest) {
                         const typeText = context.checker.typeToString(type);
+                        const span = context.sourceFile.getSpan(node);
 
-                        context.diagnostics.addError(
-                                'ADTK-CORE-0203',
-                                'Tuple has elements after rest element',
-                                [
-                                        {
-                                                span: context.sourceFile.getSpan(elementNode),
-                                                message: `Tuple element appears after rest element`,
-                                                issue: 'Rest elements must be the final element in a tuple',
-                                                help: 'Move the rest element to the end of the tuple',
-                                        },
-                                ],
-                                {
-                                        description: `The tuple type '${typeText}' has non-rest elements following a rest element.`,
-                                        notes: [
-                                                'Rest elements must be the last element in a tuple',
-                                                'Valid: [string, number, ...boolean[]]',
-                                                'Invalid: [string, ...boolean[], number]',
-                                        ],
-                                },
+                        context.diagnostics.add(
+                                CoreDiagnostics.TUPLE_ELEMENT_AFTER_REST.new(span, typeText),
                         );
 
                         return err({
@@ -161,26 +146,9 @@ function extractTupleFromCheckerType(
 
         if (!target.elementFlags) {
                 const typeText = context.checker.typeToString(type);
-
-                context.diagnostics.addError(
-                        'ADTK-CORE-0200',
-                        'Tuple type missing element flags',
-                        [
-                                {
-                                        span: context.sourceFile.getSpan(node),
-                                        message: `Tuple type '${typeText}' has no element flags`,
-                                        issue: 'Cannot determine which elements are optional or rest elements',
-                                },
-                        ],
-                        {
-                                description:
-                                        'Tuple type has unexpected internal structure - element flags are missing.',
-                                notes: [
-                                        'This is likely a TypeScript compiler version incompatibility',
-                                        'Element flags indicate which elements are required, optional, or rest',
-                                        `Found type: ${typeText}`,
-                                ],
-                        },
+                const span = context.sourceFile.getSpan(node);
+                context.diagnostics.add(
+                        CoreDiagnostics.TUPLE_MISSING_ELEMENT_FLAGS.new(span, typeText),
                 );
 
                 return err({
@@ -200,25 +168,9 @@ function extractTupleFromCheckerType(
 
                 if (elementFlag === undefined) {
                         const typeText = context.checker.typeToString(type);
-
-                        context.diagnostics.addError(
-                                'ADTK-CORE-0201',
-                                'Tuple element missing flag',
-                                [
-                                        {
-                                                span: context.sourceFile.getSpan(node),
-                                                message: `Tuple element at index ${i} has no element flag`,
-                                                issue: 'Cannot determine if element is required, optional, or rest',
-                                        },
-                                ],
-                                {
-                                        description: `Element ${i} in tuple type '${typeText}' is missing its element flag.`,
-                                        notes: [
-                                                'This is likely a TypeScript compiler version incompatibility',
-                                                `Total elements: ${typeArgs.length}`,
-                                                `Element flags length: ${target.elementFlags.length}`,
-                                        ],
-                                },
+                        const span = context.sourceFile.getSpan(node);
+                        context.diagnostics.add(
+                                CoreDiagnostics.TUPLE_MISSING_ELEMENT_FLAGS.new(span, typeText),
                         );
 
                         return err({
@@ -234,27 +186,10 @@ function extractTupleFromCheckerType(
 
                 if (isVariadic) {
                         const typeText = context.checker.typeToString(type);
+                        const span = context.sourceFile.getSpan(node);
 
-                        context.diagnostics.addError(
-                                'ADTK-CORE-0202',
-                                'Variadic tuple elements are not supported',
-                                [
-                                        {
-                                                span: context.sourceFile.getSpan(node),
-                                                message: `Tuple element at index ${i} is variadic`,
-                                                issue: 'Variadic tuple elements cannot be represented in the IR',
-                                                help: 'Use a rest element instead: [...T[]]',
-                                        },
-                                ],
-                                {
-                                        description: `The tuple type '${typeText}' contains a variadic element at position ${i}.`,
-                                        notes: [
-                                                'Variadic elements are advanced TypeScript features for type-level operations',
-                                                'The IR supports rest elements but not variadic elements',
-                                                'Example of rest element: [string, ...number[]]',
-                                                'Example of variadic (not supported): [...T, ...U]',
-                                        ],
-                                },
+                        context.diagnostics.add(
+                                CoreDiagnostics.TUPLE_VARIADIC_NOT_SUPPORTED.new(span, typeText, i),
                         );
 
                         return err({
@@ -266,28 +201,10 @@ function extractTupleFromCheckerType(
 
                 if (foundRest && !isRest) {
                         const typeText = context.checker.typeToString(type);
+                        const span = context.sourceFile.getSpan(node);
 
-                        context.diagnostics.addError(
-                                'ADTK-CORE-0203',
-                                'Tuple has elements after rest element',
-                                [
-                                        {
-                                                span: context.sourceFile.getSpan(node),
-                                                message: `Tuple element at index ${i} appears after rest element`,
-                                                issue: 'Rest elements must be the final element in a tuple',
-                                                help: 'Move the rest element to the end of the tuple',
-                                        },
-                                ],
-                                {
-                                        description: `The tuple type '${typeText}' has non-rest elements following a rest element.`,
-                                        notes: [
-                                                'Rest elements must be the last element in a tuple',
-                                                'Valid: [string, number, ...boolean[]]',
-                                                'Invalid: [string, ...boolean[], number]',
-                                                `Rest element found at index ${elements.length}`,
-                                                `Non-rest element found at index ${i}`,
-                                        ],
-                                },
+                        context.diagnostics.add(
+                                CoreDiagnostics.TUPLE_ELEMENT_AFTER_REST.new(span, typeText),
                         );
 
                         return err({

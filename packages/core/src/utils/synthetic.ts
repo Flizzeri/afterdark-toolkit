@@ -2,6 +2,7 @@
 
 import { symbolId, hashString, type SymbolId, type DiagnosticCollector } from '@adtk/shared';
 
+import { CoreDiagnostics } from '../diagnostics';
 import type { IRNode } from '../ir';
 
 /**
@@ -30,15 +31,13 @@ export function createSyntheticSymbolId(
         const hashResult = hashString(value);
 
         if (!hashResult.ok) {
-                diagnostics.add({
-                        code: 'ADTK-FATAL-0001',
-                        category: 'fatal',
-                        message: {
-                                title: 'Failed to hash synthetic symbol value',
-                                description: `Cannot create synthetic symbol ID for ${category}: ${hashResult.error}`,
-                        },
-                        spans: [],
-                });
+                diagnostics.add(
+                        CoreDiagnostics.SYNTHETIC_SYMBOL_ID_HASH_FAILED.new(
+                                category,
+                                hashResult.error,
+                        ),
+                );
+
                 // Fatal diagnostic throws, but TypeScript doesn't know that
                 // This return is unreachable but satisfies the type checker
                 return symbolId('');

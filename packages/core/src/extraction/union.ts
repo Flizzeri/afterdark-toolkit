@@ -11,6 +11,7 @@ import {
         type LiteralValue,
 } from '../ir';
 import type { ExtractionContext, ExtractionError } from './types.js';
+import { CoreDiagnostics } from '../diagnostics';
 import { extractMetadata } from '../metadata';
 
 export function extractUnion(
@@ -65,26 +66,9 @@ export function extractUnion(
 
         if (members.length === 0) {
                 const typeText = context.checker.typeToString(type);
+                const span = context.sourceFile.getSpan(node);
 
-                context.diagnostics.addError(
-                        'ADTK-CORE-0300',
-                        'Union type has no members',
-                        [
-                                {
-                                        span: context.sourceFile.getSpan(node),
-                                        message: `Union type '${typeText}' contains no members`,
-                                        issue: 'Union types must have at least one member',
-                                },
-                        ],
-                        {
-                                description: 'A union type with no members cannot be represented.',
-                                notes: [
-                                        'This is likely an internal error in TypeScript type construction',
-                                        'Union types are created with syntax: T | U | V',
-                                        `Found type: ${typeText}`,
-                                ],
-                        },
-                );
+                context.diagnostics.add(CoreDiagnostics.UNION_NO_MEMBERS.new(span, typeText));
 
                 return err({
                         type: 'unsupported-type',
@@ -95,27 +79,11 @@ export function extractUnion(
 
         if (members.length === 1) {
                 const typeText = context.checker.typeToString(type);
+                const span = context.sourceFile.getSpan(node);
+                const memberTypeText = context.checker.typeToString(unionType.types[0]);
 
-                context.diagnostics.addWarning(
-                        'ADTK-CORE-0301',
-                        'Union type has only one member',
-                        [
-                                {
-                                        span: context.sourceFile.getSpan(node),
-                                        message: `Union type '${typeText}' contains only one member`,
-                                        issue: 'Single-member unions are redundant',
-                                        help: 'Remove the union and use the member type directly',
-                                },
-                        ],
-                        {
-                                description:
-                                        'A union with a single member is equivalent to that member type.',
-                                notes: [
-                                        'Single-member unions may indicate a type simplification opportunity',
-                                        'The IR will still represent this as a union for accuracy',
-                                        `Member type: ${context.checker.typeToString(unionType.types[0])}`,
-                                ],
-                        },
+                context.diagnostics.add(
+                        CoreDiagnostics.UNION_SINGLE_MEMBER.new(span, typeText, memberTypeText),
                 );
         }
 

@@ -5,6 +5,7 @@ import * as ts from 'typescript';
 import { describe, it, expect } from 'vitest';
 
 import { parseAnnotations } from './parser.js';
+import { CoreDiagnostics } from '../diagnostics.js';
 
 function createTestProgram(source: string): {
         program: ts.Program;
@@ -531,7 +532,9 @@ describe('parseAnnotations', () => {
                         expect(result[0].tag).toBe('custom');
                         expect(result[0].data).toBe('some weird { syntax');
                         expect(diagnostics.hasWarnings()).toBe(true);
-                        expect(diagnostics.getWarnings()[0].code).toBe('ADTK-CORE-1002');
+                        expect(diagnostics.getWarnings()[0].code).toBe(
+                                CoreDiagnostics.ANNOTATION_UNPARSEABLE_ARGUMENT.code,
+                        );
                         expect(diagnostics.getWarnings()[0].message.title).toContain(
                                 'Cannot parse annotation argument',
                         );

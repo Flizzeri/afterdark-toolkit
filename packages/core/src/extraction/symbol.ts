@@ -7,6 +7,7 @@ import * as ts from 'typescript';
 import { createExtractionContext } from './context.js';
 import { extractType } from './extractor.js';
 import type { SymbolExtractionResult, ExtractionError, ExtractionOptions } from './types.js';
+import { CoreDiagnostics } from '../diagnostics.js';
 import { extractDependencies } from '../utils';
 
 /**
@@ -26,14 +27,9 @@ export function extractSymbol(
         // Get declaration
         const declarations = symbol.getDeclarations();
         if (!declarations || declarations.length === 0) {
-                diagnostics.addError('ADTK-CORE-0002', 'Symbol has no declaration', [], {
-                        description: `Symbol '${symbol.getName()}' exists but has no source declaration.`,
-                        notes: [
-                                'This can happen with ambient declarations or compiler-generated symbols',
-                                `Symbol name: ${symbol.getName()}`,
-                                `Symbol flags: ${symbol.flags}`,
-                        ],
-                });
+                diagnostics.add(
+                        CoreDiagnostics.SYMBOL_NO_DECLARATION.new(symbol.getName(), symbol.flags),
+                );
 
                 return err({
                         type: 'missing-declaration',

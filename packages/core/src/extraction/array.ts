@@ -5,6 +5,7 @@ import type * as ts from 'typescript';
 
 import type { IRArray } from '../ir';
 import type { ExtractionContext, ExtractionError } from './types.js';
+import { CoreDiagnostics } from '../diagnostics';
 import { extractMetadata } from '../metadata';
 
 export function extractArray(
@@ -24,28 +25,8 @@ export function extractArray(
 
         if (typeArgs.length === 0) {
                 const typeText = context.checker.typeToString(type);
-
-                context.diagnostics.addError(
-                        'ADTK-CORE-0100',
-                        'Array type missing element type argument',
-                        [
-                                {
-                                        span: context.sourceFile.getSpan(node),
-                                        message: `Array type '${typeText}' has no type arguments`,
-                                        issue: 'Array types must have exactly one type argument specifying the element type',
-                                        help: 'Use Array<T> or T[] syntax with a specific element type',
-                                },
-                        ],
-                        {
-                                description:
-                                        'Arrays must specify their element type. Generic Array without type arguments is not supported.',
-                                notes: [
-                                        'Valid examples: string[], Array<number>, Array<User>',
-                                        'Invalid: Array (without type argument)',
-                                        `Found type: ${typeText}`,
-                                ],
-                        },
-                );
+                const span = context.sourceFile.getSpan(node);
+                context.diagnostics.add(CoreDiagnostics.ARRAY_NO_TYPE_ARGUMENT.new(span, typeText));
 
                 return err({
                         type: 'unsupported-type',
@@ -56,27 +37,13 @@ export function extractArray(
 
         if (typeArgs.length > 1) {
                 const typeText = context.checker.typeToString(type);
-
-                context.diagnostics.addError(
-                        'ADTK-CORE-0101',
-                        'Array type has multiple type arguments',
-                        [
-                                {
-                                        span: context.sourceFile.getSpan(node),
-                                        message: `Array type '${typeText}' has ${typeArgs.length} type arguments`,
-                                        issue: 'Array types must have exactly one type argument',
-                                        help: 'Arrays are homogeneous - use a union for multiple element types: Array<string | number>',
-                                },
-                        ],
-                        {
-                                description: `Array type has ${typeArgs.length} type arguments, expected exactly 1.`,
-                                notes: [
-                                        'Arrays hold elements of a single type',
-                                        'For multiple types, use a union: Array<T | U>',
-                                        'For fixed-length heterogeneous arrays, use tuples: [string, number]',
-                                        `Found type: ${typeText}`,
-                                ],
-                        },
+                const span = context.sourceFile.getSpan(node);
+                context.diagnostics.add(
+                        CoreDiagnostics.ARRAY_MULTIPLE_TYPE_ARGUMENTS.new(
+                                span,
+                                typeText,
+                                typeArgs.length,
+                        ),
                 );
 
                 return err({

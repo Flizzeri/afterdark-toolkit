@@ -5,6 +5,7 @@ import * as ts from 'typescript';
 
 import type { IRIntersection, IRIntersectionMember } from '../ir';
 import type { ExtractionContext, ExtractionError } from './types.js';
+import { CoreDiagnostics } from '../diagnostics';
 import { extractMetadata } from '../metadata';
 
 export function extractIntersection(
@@ -57,26 +58,10 @@ export function extractIntersection(
 
         if (members.length === 0) {
                 const typeText = context.checker.typeToString(type);
+                const span = context.sourceFile.getSpan(node);
 
-                context.diagnostics.addError(
-                        'ADTK-CORE-0400',
-                        'Intersection type has no members',
-                        [
-                                {
-                                        span: context.sourceFile.getSpan(node),
-                                        message: `Intersection type '${typeText}' contains no members`,
-                                        issue: 'Intersection types must have at least one member',
-                                },
-                        ],
-                        {
-                                description:
-                                        'An intersection type with no members cannot be represented.',
-                                notes: [
-                                        'This is likely an internal error in TypeScript type construction',
-                                        'Intersection types are created with syntax: T & U & V',
-                                        `Found type: ${typeText}`,
-                                ],
-                        },
+                context.diagnostics.add(
+                        CoreDiagnostics.INTERSECTION_NO_MEMBERS.new(span, typeText),
                 );
 
                 return err({
@@ -88,27 +73,15 @@ export function extractIntersection(
 
         if (members.length === 1) {
                 const typeText = context.checker.typeToString(type);
+                const span = context.sourceFile.getSpan(node);
+                const memberTypeText = context.checker.typeToString(intersectionType.types[0]);
 
-                context.diagnostics.addWarning(
-                        'ADTK-CORE-0401',
-                        'Intersection type has only one member',
-                        [
-                                {
-                                        span: context.sourceFile.getSpan(node),
-                                        message: `Intersection type '${typeText}' contains only one member`,
-                                        issue: 'Single-member intersections are redundant',
-                                        help: 'Remove the intersection and use the member type directly',
-                                },
-                        ],
-                        {
-                                description:
-                                        'An intersection with a single member is equivalent to that member type.',
-                                notes: [
-                                        'Single-member intersections may indicate a type simplification opportunity',
-                                        'The IR will still represent this as an intersection for accuracy',
-                                        `Member type: ${context.checker.typeToString(intersectionType.types[0])}`,
-                                ],
-                        },
+                context.diagnostics.add(
+                        CoreDiagnostics.INTERSECTION_SINGLE_MEMBER.new(
+                                span,
+                                typeText,
+                                memberTypeText,
+                        ),
                 );
         }
 

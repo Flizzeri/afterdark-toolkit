@@ -5,6 +5,7 @@ import * as ts from 'typescript';
 
 import type { IRUnsupported } from '../ir';
 import type { ExtractionContext, ExtractionError } from './types.js';
+import { CoreDiagnostics } from '../diagnostics.js';
 import { extractMetadata } from '../metadata';
 
 // Shared builder constructing the IRUnsupported node
@@ -42,24 +43,11 @@ export function extractTypeParameter(
 ): Result<IRUnsupported, ExtractionError> {
         const typeText = context.checker.typeToString(type);
 
-        context.diagnostics.addWarning(
-                'ADTK-CORE-1001',
-                'Unresolved type parameter',
-                [
-                        {
-                                span: context.sourceFile.getSpan(node),
-                                message: `Type parameter '${typeText}' is not instantiated`,
-                                issue: 'Type parameters cannot be represented in the IR without a concrete argument',
-                                help: 'Ensure the type is used with a concrete type argument, or restrict this type to non-generic definitions',
-                        },
-                ],
-                {
-                        description: `The type parameter '${typeText}' has no concrete value at extraction time.`,
-                        notes: [
-                                'Type parameters are only supported when fully instantiated',
-                                'Consider using a concrete type instead of a generic parameter',
-                        ],
-                },
+        context.diagnostics.add(
+                CoreDiagnostics.UNSUPPORTED_TYPE_PARAMETER.new(
+                        context.sourceFile.getSpan(node),
+                        typeText,
+                ),
         );
 
         return buildUnsupported(type, node, context, 'type-parameter');
@@ -78,30 +66,18 @@ export function extractConditional(
 ): Result<IRUnsupported, ExtractionError> {
         const typeText = context.checker.typeToString(type);
 
-        context.diagnostics.addWarning(
-                'ADTK-CORE-1002',
-                'Conditional type not supported',
-                [
-                        {
-                                span: context.sourceFile.getSpan(node),
-                                message: `Conditional type '${typeText}' cannot be statically resolved`,
-                                issue: 'Conditional types require runtime information to evaluate',
-                                help: 'Replace with a concrete union or a specific type',
-                        },
-                ],
-                {
-                        description: `The conditional type '${typeText}' cannot be evaluated at extraction time.`,
-                        notes: [
-                                'Conditional types (T extends U ? X : Y) are not representable in the IR',
-                                'Consider pre-resolving the condition into an explicit union type',
-                        ],
-                },
+        context.diagnostics.add(
+                CoreDiagnostics.UNSUPPORTED_CONDITIONAL.new(
+                        context.sourceFile.getSpan(node),
+                        typeText,
+                ),
         );
 
         return buildUnsupported(type, node, context, 'conditional');
 }
 
 // 3. Index type
+
 export function isIndexType(type: ts.Type): boolean {
         return !!(type.flags & ts.TypeFlags.Index);
 }
@@ -113,24 +89,8 @@ export function extractIndex(
 ): Result<IRUnsupported, ExtractionError> {
         const typeText = context.checker.typeToString(type);
 
-        context.diagnostics.addWarning(
-                'ADTK-CORE-1003',
-                'keyof type not supported',
-                [
-                        {
-                                span: context.sourceFile.getSpan(node),
-                                message: `'${typeText}' is a keyof type that cannot be statically resolved`,
-                                issue: 'keyof requires a concrete type argument to enumerate its keys',
-                                help: 'Provide a concrete type argument or use an explicit string literal union',
-                        },
-                ],
-                {
-                        description: `The index type '${typeText}' (keyof) cannot be extracted to IR.`,
-                        notes: [
-                                'keyof types are only supported when they resolve to a known string literal union',
-                                'For example, keyof { id: number; name: string } resolves and is supported',
-                        ],
-                },
+        context.diagnostics.add(
+                CoreDiagnostics.UNSUPPORTED_KEYOF.new(context.sourceFile.getSpan(node), typeText),
         );
 
         return buildUnsupported(type, node, context, 'index');
@@ -149,24 +109,11 @@ export function extractIndexedAccess(
 ): Result<IRUnsupported, ExtractionError> {
         const typeText = context.checker.typeToString(type);
 
-        context.diagnostics.addWarning(
-                'ADTK-CORE-1004',
-                'Indexed access type not supported',
-                [
-                        {
-                                span: context.sourceFile.getSpan(node),
-                                message: `'${typeText}' is an indexed access type that cannot be statically resolved`,
-                                issue: 'The object or key type contains an unresolved type parameter',
-                                help: 'Use a concrete type or resolve the indexed access to a specific type',
-                        },
-                ],
-                {
-                        description: `The indexed access type '${typeText}' cannot be extracted to IR.`,
-                        notes: [
-                                'Indexed access types (T[K]) are only supported when both T and K are concrete',
-                                'For example, User["id"] resolves and is supported; T["id"] is not',
-                        ],
-                },
+        context.diagnostics.add(
+                CoreDiagnostics.UNSUPPORTED_INDEXED_ACCESS.new(
+                        context.sourceFile.getSpan(node),
+                        typeText,
+                ),
         );
 
         return buildUnsupported(type, node, context, 'indexed-access');
@@ -185,24 +132,11 @@ export function extractSubstitution(
 ): Result<IRUnsupported, ExtractionError> {
         const typeText = context.checker.typeToString(type);
 
-        context.diagnostics.addWarning(
-                'ADTK-CORE-1005',
-                'Substitution type not supported',
-                [
-                        {
-                                span: context.sourceFile.getSpan(node),
-                                message: `'${typeText}' is an internal substitution type`,
-                                issue: 'Substitution types are intermediate representations used during type inference',
-                                help: 'This type typically appears inside conditional types; simplify the surrounding type',
-                        },
-                ],
-                {
-                        description: `The substitution type '${typeText}' is an internal TypeScript construct.`,
-                        notes: [
-                                'Substitution types arise from infer clauses and type narrowing inside conditionals',
-                                'They are not representable in the IR',
-                        ],
-                },
+        context.diagnostics.add(
+                CoreDiagnostics.UNSUPPORTED_SUBSTITUTION.new(
+                        context.sourceFile.getSpan(node),
+                        typeText,
+                ),
         );
 
         return buildUnsupported(type, node, context, 'substitution');
@@ -221,30 +155,17 @@ export function extractCallable(
 ): Result<IRUnsupported, ExtractionError> {
         const typeText = context.checker.typeToString(type);
 
-        context.diagnostics.addWarning(
-                'ADTK-CORE-1006',
-                'Callable type not supported',
-                [
-                        {
-                                span: context.sourceFile.getSpan(node),
-                                message: `'${typeText}' is a function type`,
-                                issue: 'Function types cannot be represented as data schemas',
-                                help: 'Remove the function type or wrap it in an object property if the signature is needed as metadata',
-                        },
-                ],
-                {
-                        description: `The callable type '${typeText}' has call signatures and cannot be extracted to IR.`,
-                        notes: [
-                                'Function types are not representable as IR nodes',
-                                'If this is a method on an interface, consider converting to a property with a function type',
-                        ],
-                },
+        context.diagnostics.add(
+                CoreDiagnostics.UNSUPPORTED_CALLABLE.new(
+                        context.sourceFile.getSpan(node),
+                        typeText,
+                ),
         );
 
         return buildUnsupported(type, node, context, 'callable');
 }
 
-// 6. Constructable object
+// 7. Constructable object
 
 export function isConstructableType(type: ts.Type, context: ExtractionContext): boolean {
         return context.checker.getSignaturesOfType(type, ts.SignatureKind.Construct).length > 0;
@@ -257,30 +178,17 @@ export function extractConstructable(
 ): Result<IRUnsupported, ExtractionError> {
         const typeText = context.checker.typeToString(type);
 
-        context.diagnostics.addWarning(
-                'ADTK-CORE-1007',
-                'Constructor type not supported',
-                [
-                        {
-                                span: context.sourceFile.getSpan(node),
-                                message: `'${typeText}' is a constructor type`,
-                                issue: 'Constructor types cannot be represented as data schemas',
-                                help: 'Use the instance type instead of the constructor type',
-                        },
-                ],
-                {
-                        description: `The constructor type '${typeText}' has construct signatures and cannot be extracted to IR.`,
-                        notes: [
-                                'Constructor types (new (...) => T) are not representable as IR nodes',
-                                'Extract the instance type T instead',
-                        ],
-                },
+        context.diagnostics.add(
+                CoreDiagnostics.UNSUPPORTED_CONSTRUCTABLE.new(
+                        context.sourceFile.getSpan(node),
+                        typeText,
+                ),
         );
 
         return buildUnsupported(type, node, context, 'constructable');
 }
 
-// 7. Abstract mapped type
+// 8. Abstract mapped type
 
 export function isAbstractMappedType(type: ts.Type, context: ExtractionContext): boolean {
         if (!(type.flags & ts.TypeFlags.Object)) return false;
@@ -299,30 +207,17 @@ export function extractAbstractMapped(
 ): Result<IRUnsupported, ExtractionError> {
         const typeText = context.checker.typeToString(type);
 
-        context.diagnostics.addWarning(
-                'ADTK-CORE-1008',
-                'Abstract mapped type not supported',
-                [
-                        {
-                                span: context.sourceFile.getSpan(node),
-                                message: `'${typeText}' is a mapped type with unresolved type parameters`,
-                                issue: 'The mapped type cannot be evaluated without a concrete type argument',
-                                help: 'Provide a concrete type argument to instantiate the mapped type',
-                        },
-                ],
-                {
-                        description: `The mapped type '${typeText}' has no resolvable properties at extraction time.`,
-                        notes: [
-                                'Mapped types like Partial<T> are only supported when T is a concrete type',
-                                'For example, Partial<{ x: number }> is supported; Partial<T> is not',
-                        ],
-                },
+        context.diagnostics.add(
+                CoreDiagnostics.UNSUPPORTED_ABSTRACT_MAPPED.new(
+                        context.sourceFile.getSpan(node),
+                        typeText,
+                ),
         );
 
         return buildUnsupported(type, node, context, 'abstract-mapped');
 }
 
-// 8. Generic object
+// 9. Generic object
 
 export function isGenericObjectType(type: ts.Type, context: ExtractionContext): boolean {
         if (!(type.flags & ts.TypeFlags.Object)) return false;
@@ -344,30 +239,18 @@ export function extractGenericObject(
                 .filter((p) => hasFreeTypeParameter(context.checker.getTypeOfSymbol(p)))
                 .map((p) => p.name);
 
-        context.diagnostics.addWarning(
-                'ADTK-CORE-1009',
-                'Generic object type not supported',
-                [
-                        {
-                                span: context.sourceFile.getSpan(node),
-                                message: `'${typeText}' has properties with unresolved type parameters: ${freeProps.join(', ')}`,
-                                issue: 'Object types with free type parameters cannot be fully extracted',
-                                help: 'Provide concrete type arguments or restrict this type to non-generic definitions',
-                        },
-                ],
-                {
-                        description: `The object type '${typeText}' contains properties whose types are unresolved type parameters.`,
-                        notes: [
-                                `Properties with free type parameters: ${freeProps.join(', ')}`,
-                                'Generic objects are only supported when fully instantiated with concrete types',
-                        ],
-                },
+        context.diagnostics.add(
+                CoreDiagnostics.UNSUPPORTED_GENERIC_OBJECT.new(
+                        context.sourceFile.getSpan(node),
+                        typeText,
+                        freeProps,
+                ),
         );
 
         return buildUnsupported(type, node, context, 'generic-object');
 }
 
-// 9. Unknown fallback
+// 10. Unknown fallback
 
 export function extractUnknownType(
         type: ts.Type,
@@ -376,24 +259,12 @@ export function extractUnknownType(
 ): Result<IRUnsupported, ExtractionError> {
         const typeText = context.checker.typeToString(type);
 
-        context.diagnostics.addWarning(
-                'ADTK-CORE-1010',
-                'Unknown type encountered',
-                [
-                        {
-                                span: context.sourceFile.getSpan(node),
-                                message: `The type '${typeText}' could not be classified`,
-                                issue: 'No extraction path exists for this type',
-                                help: 'Report this as a bug if you believe this type should be supported',
-                        },
-                ],
-                {
-                        description: `The type '${typeText}' has an unrecognised structure (flags: ${type.flags}).`,
-                        notes: [
-                                `TypeScript type flags: ${type.flags}`,
-                                'This may indicate a new TypeScript type construct not yet handled by the extractor',
-                        ],
-                },
+        context.diagnostics.add(
+                CoreDiagnostics.UNSUPPORTED_UNKNOWN_TYPE.new(
+                        context.sourceFile.getSpan(node),
+                        typeText,
+                        type.flags,
+                ),
         );
 
         return buildUnsupported(type, node, context, 'unknown');

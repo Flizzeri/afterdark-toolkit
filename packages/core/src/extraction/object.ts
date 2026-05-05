@@ -6,6 +6,7 @@ import * as ts from 'typescript';
 import { parseAnnotations } from '../annotation';
 import type { IRObject, IRObjectProperty, IRIndexSignature } from '../ir';
 import type { ExtractionContext, ExtractionError } from './types.js';
+import { CoreDiagnostics } from '../diagnostics';
 import { extractMetadata } from '../metadata';
 
 export function extractObject(
@@ -91,29 +92,19 @@ function extractProperty(
 ): Result<IRObjectProperty, ExtractionError> {
         const propertyName = symbol.getName();
         const propertyType = context.checker.getTypeOfSymbolAtLocation(symbol, parentNode);
+        const parentTypeText = context.checker.typeToString(parentType);
+        const parentSpan = context.sourceFile.getSpan(parentNode);
 
         const declarations = symbol.getDeclarations();
         const declaration = declarations?.[0];
 
         if (!declaration) {
-                context.diagnostics.addError(
-                        'ADTK-CORE-0102',
-                        'Property has no declaration',
-                        [
-                                {
-                                        span: context.sourceFile.getSpan(parentNode),
-                                        message: `Property '${propertyName}' has no source declaration`,
-                                        issue: 'Cannot extract property metadata without a declaration',
-                                },
-                        ],
-                        {
-                                description: `The property '${propertyName}' exists in the type but has no declaration node in the source code.`,
-                                notes: [
-                                        'This can happen with computed or synthetic properties',
-                                        'The property may be inherited or injected by a type operation',
-                                        `Parent type: ${context.checker.typeToString(parentType)}`,
-                                ],
-                        },
+                context.diagnostics.add(
+                        CoreDiagnostics.OBJECT_PROPERTY_NO_DECLARATION.new(
+                                parentSpan,
+                                propertyName,
+                                parentTypeText,
+                        ),
                 );
 
                 return err({
@@ -123,30 +114,17 @@ function extractProperty(
         }
 
         const propertyNode = getPropertyNode(declaration, context);
+        const span = context.sourceFile.getSpan(declaration);
 
         if (!propertyNode.ok) {
                 switch (propertyNode.error.type) {
                         case 'missing-property': {
-                                context.diagnostics.addError(
-                                        'ADTK-CORE-0103',
-                                        'Cannot find property node',
-                                        [
-                                                {
-                                                        span: context.sourceFile.getSpan(
-                                                                declaration,
-                                                        ),
-                                                        message: `Cannot locate type node for property '${propertyName}'`,
-                                                        issue: 'Property declaration exists but type node is missing',
-                                                },
-                                        ],
-                                        {
-                                                description: `The property '${propertyName}' has a declaration but no associated type node could be found.`,
-                                                notes: [
-                                                        'This is likely an internal error in property extraction',
-                                                        `Declaration kind: ${ts.SyntaxKind[declaration.kind]}`,
-                                                        'The property may have an implicit type that needs inference',
-                                                ],
-                                        },
+                                context.diagnostics.add(
+                                        CoreDiagnostics.OBJECT_PROPERTY_NO_TYPE_NODE.new(
+                                                span,
+                                                propertyName,
+                                                declaration.kind,
+                                        ),
                                 );
                                 return err({
                                         type: 'internal-error',
@@ -170,7 +148,6 @@ function extractProperty(
 
         const optional = !!(symbol.flags & ts.SymbolFlags.Optional);
         const readonly = isReadonlyProperty(declaration);
-        const span = context.sourceFile.getSpan(declaration);
 
         // Extract annotations from property symbol
         const tsSourceFile = getTsSourceFile(declaration);
@@ -202,31 +179,17 @@ function extractIndexSignature(
 
         if (stringIndexType && numberIndexType) {
                 const typeText = context.checker.typeToString(type);
+                const span = context.sourceFile.getSpan(node);
+                const stringIndexText = context.checker.typeToString(stringIndexType);
+                const numberIndexText = context.checker.typeToString(numberIndexType);
 
-                context.diagnostics.addError(
-                        'ADTK-CORE-0104',
-                        'Object has both string and number index signatures',
-                        [
-                                {
-                                        span: context.sourceFile.getSpan(node),
-                                        message: `Type '${typeText}' has both [key: string] and [key: number] index signatures`,
-                                        issue: 'Objects can have only one index signature in the IR',
-                                        help: 'Use separate properties or a union type for the value',
-                                },
-                        ],
-                        {
-                                description:
-                                        'The IR representation supports only a single index signature per object type.',
-                                notes: [
-                                        'TypeScript allows both string and number index signatures',
-                                        'The IR simplifies this to a single index signature',
-                                        'String index type: ' +
-                                                context.checker.typeToString(stringIndexType),
-                                        'Number index type: ' +
-                                                context.checker.typeToString(numberIndexType),
-                                        'Consider using named properties for number-indexed values',
-                                ],
-                        },
+                context.diagnostics.add(
+                        CoreDiagnostics.OBJECT_DUAL_INDEX_SIGNATURES.new(
+                                span,
+                                typeText,
+                                stringIndexText,
+                                numberIndexText,
+                        ),
                 );
 
                 return err({
@@ -341,24 +304,9 @@ function emitCallableMemberError(
         declaration: ts.Declaration,
         context: ExtractionContext,
 ): Result<never, UnsupportedProperty> {
-        context.diagnostics.addError(
-                'ADTK-CORE-0105',
-                'Callable members are not supported',
-                [
-                        {
-                                span: context.sourceFile.getSpan(declaration),
-                                message: 'Methods and function-type properties cannot be represented in the IR',
-                                issue: 'Callable members are not data types and cannot be validated or migrated',
-                                help: 'Remove the method or exclude this type from extraction',
-                        },
-                ],
-                {
-                        description: 'The IR represents data shapes, not behavior.',
-                        notes: [
-                                'Affected kinds: method signatures, method declarations, function-type properties',
-                                `Declaration kind: ${ts.SyntaxKind[declaration.kind]}`,
-                        ],
-                },
+        const span = context.sourceFile.getSpan(declaration);
+        context.diagnostics.add(
+                CoreDiagnostics.OBJECT_METHOD_NOT_SUPPORTED.new(span, declaration.kind),
         );
 
         return err({ type: 'unsupported-property' });

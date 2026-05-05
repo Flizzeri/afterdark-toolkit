@@ -15,6 +15,7 @@ import * as ts from 'typescript';
 
 import type { SymbolSource } from './types.js';
 import { getDeclarationSymbol } from './utils.js';
+import { CoreDiagnostics } from '../diagnostics.js';
 
 export function resolveSource(
         source: SymbolSource,
@@ -69,20 +70,8 @@ function resolveFiles(
                 const sourceFile = program.getSourceFile(path);
 
                 if (!sourceFile) {
-                        diagnostics.addWarning(
-                                'ADTK-CORE-2000',
-                                'Source file not found in program',
-                                [],
-                                {
-                                        description: `File ${path} is not part of the loaded TypeScript program.`,
-                                        notes: [
-                                                'The file may not be included in tsconfig.json',
-                                                'The file may have been excluded by skipLibFiles option',
-                                                'Check that the file path is correct and the file exists',
-                                                'This file will be skipped in the query results',
-                                        ],
-                                },
-                        );
+                        diagnostics.add(CoreDiagnostics.QUERY_FILE_NOT_IN_PROGRAM.new(path));
+
                         continue;
                 }
 
@@ -109,15 +98,7 @@ function resolveGlob(
         const matchedFiles = allFiles.filter((file) => minimatch(file, pattern));
 
         if (matchedFiles.length === 0) {
-                diagnostics.addWarning('ADTK-CORE-2001', 'Glob pattern matched no files', [], {
-                        description: `The glob pattern "${pattern}" did not match any files in the program.`,
-                        notes: [
-                                `Total files in program: ${allFiles.length}`,
-                                'Check that the glob pattern is correct',
-                                'Glob syntax: ** for directories, * for files, {a,b} for alternatives',
-                                'Example patterns: "src/**/*.ts", "models/*.ts", "**/*.{ts,tsx}"',
-                        ],
-                });
+                diagnostics.add(CoreDiagnostics.QUERY_GLOB_NO_MATCH.new(pattern, allFiles.length));
 
                 return err(`Glob pattern "${pattern}" matched no files`);
         }
@@ -129,14 +110,8 @@ function resolveGlob(
                 if (result.ok) {
                         validPaths.push(result.value);
                 } else {
-                        diagnostics.addWarning(
-                                'ADTK-CORE-2002',
-                                'Invalid file path from glob',
-                                [],
-                                {
-                                        description: `Failed to create FilePath: ${result.error}`,
-                                        notes: ['This file will be skipped in the query results'],
-                                },
+                        diagnostics.add(
+                                CoreDiagnostics.QUERY_GLOB_INVALID_FILE_PATH.new(result.error),
                         );
                 }
         }
@@ -159,17 +134,7 @@ function resolveCallSites(
         }
 
         if (symbols.size === 0) {
-                diagnostics.addWarning('ADTK-CORE-2003', 'No call sites found', [], {
-                        description: `No calls to function "${functionName}" with type arguments were found in the program.`,
-                        notes: [
-                                `Searched for: ${functionName}<T>(...)`,
-                                'Call sites must have explicit type arguments to be detected',
-                                'Example: validate<User>(data) ✓',
-                                'Example: validate(data) ✗ (no type argument)',
-                                'Check that the function name is spelled correctly',
-                                'Check that calls use explicit type parameters',
-                        ],
-                });
+                diagnostics.add(CoreDiagnostics.QUERY_NO_CALL_SITES.new(functionName));
 
                 return err(`No call sites for "${functionName}" found`);
         }
