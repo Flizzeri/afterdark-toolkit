@@ -7,13 +7,13 @@ import {
         ok,
         err,
         filePath,
-        createDiagnostic,
         type Result,
         type FilePath,
         type DiagnosticCollector,
 } from '@adtk/shared';
 import type * as ts from 'typescript';
 
+import { ProgramDiagnostics } from '../codes.js';
 import { convertDiagnostics } from '../diagnostics';
 import type { Program } from '../program';
 import type { EmitConfig, EmitResult, EmitError } from './types.js';
@@ -95,14 +95,8 @@ export function emitProgram(
                 );
         } catch (error) {
                 diagnostics.add(
-                        createDiagnostic(
-                                'ADTK-EMIT-0001',
-                                'fatal',
-                                {
-                                        title: 'Emit crashed',
-                                        description: `Emit failed with exception: ${error instanceof Error ? error.message : String(error)}`,
-                                },
-                                [],
+                        ProgramDiagnostics.EMIT_CRASHED.new(
+                                error instanceof Error ? error.message : String(error),
                         ),
                 );
                 // Fatal diagnostic throws, but TypeScript doesn't know that

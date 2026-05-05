@@ -9,6 +9,8 @@ import {
 } from '@adtk/shared';
 import type * as ts from 'typescript';
 
+import { ProgramDiagnostics } from '../codes.js';
+
 export function generateSymbolId(symbol: ts.Symbol, diagnostics: DiagnosticCollector): SymbolId {
         const name = symbol.getName();
         const declarations = symbol.getDeclarations();
@@ -18,15 +20,12 @@ export function generateSymbolId(symbol: ts.Symbol, diagnostics: DiagnosticColle
                 const hashResult = hashString(fallbackKey);
 
                 if (!hashResult.ok) {
-                        diagnostics.add({
-                                code: 'ADTK-FATAL-0001',
-                                category: 'fatal',
-                                message: {
-                                        title: 'Failed to generate symbol ID',
-                                        description: `Cannot hash symbol metadata for '${name}': ${hashResult.error}`,
-                                },
-                                spans: [],
-                        });
+                        diagnostics.add(
+                                ProgramDiagnostics.SYMBOL_ID_HASH_FAILED.new(
+                                        name,
+                                        hashResult.error,
+                                ),
+                        );
                         return symbolId(''); // Unreachable
                 }
 
@@ -39,15 +38,12 @@ export function generateSymbolId(symbol: ts.Symbol, diagnostics: DiagnosticColle
         const filePathResult = filePath(fileName);
 
         if (!filePathResult.ok) {
-                diagnostics.add({
-                        code: 'ADTK-FATAL-0002',
-                        category: 'fatal',
-                        message: {
-                                title: 'Invalid file path in symbol declaration',
-                                description: `Failed to create file path from "${fileName}": ${filePathResult.error}`,
-                        },
-                        spans: [],
-                });
+                diagnostics.add(
+                        ProgramDiagnostics.INVALID_SYMBOL_FILE_PATH.new(
+                                fileName,
+                                filePathResult.error,
+                        ),
+                );
                 return symbolId(''); // Unreachable, but satisfies TypeScript
         }
 
@@ -56,15 +52,9 @@ export function generateSymbolId(symbol: ts.Symbol, diagnostics: DiagnosticColle
         const hashResult = hashString(fallbackKey);
 
         if (!hashResult.ok) {
-                diagnostics.add({
-                        code: 'ADTK-FATAL-0002',
-                        category: 'fatal',
-                        message: {
-                                title: 'Failed to generate symbol ID',
-                                description: `Cannot hash symbol location for '${name}': ${hashResult.error}`,
-                        },
-                        spans: [],
-                });
+                diagnostics.add(
+                        ProgramDiagnostics.SYMBOL_LOCATION_HASH_FAILED.new(name, hashResult.error),
+                );
                 return symbolId(''); // Unreachable
         }
 
