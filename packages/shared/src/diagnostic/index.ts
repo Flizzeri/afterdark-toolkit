@@ -10,4 +10,3 @@ export {
         FatalDiagnostic,
 } from './types';
 export { DiagnosticCollector } from './collector';
-export { createDiagnostic, isFatal, isError, isWarning, isInfo, isHint, throwFatal } from './utils';

@@ -14,3 +14,4 @@ export type SymbolId = Branded<string, 'SymbolId'>;
 export type TypeId = Branded<string, 'TypeId'>;
 export type NodeId = Branded<string, 'NodeId'>;
 export type JsDocTagName = Branded<string, 'JsDocTagName'>;
+export type _DiagnosticCode = Branded<string, 'DiagnosticCode'>;

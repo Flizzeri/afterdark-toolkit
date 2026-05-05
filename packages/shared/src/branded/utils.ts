@@ -4,6 +4,7 @@ import * as path from 'node:path';
 
 import { ok, err, type Result } from '../result';
 import type {
+        _DiagnosticCode,
         FilePath,
         SemVer,
         EntityName,
@@ -12,6 +13,20 @@ import type {
         NodeId,
         JsDocTagName,
 } from './types.js';
+
+type Prefix = 'ADTK' | 'PLUGIN';
+
+export function _diagnosticCode<T extends string>(
+        code: T extends `${Prefix}-${string}-${infer Suffix}`
+                ? Suffix extends `${number}${number}${number}${number}${infer Rest}`
+                        ? Rest extends '' | `${number}`
+                                ? T
+                                : never
+                        : never
+                : never,
+): _DiagnosticCode {
+        return code as _DiagnosticCode;
+}
 
 export function filePath(pathStr: string): Result<FilePath, string> {
         if (!pathStr || pathStr.trim().length === 0) {
